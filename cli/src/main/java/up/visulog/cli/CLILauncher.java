@@ -51,6 +51,8 @@ public class CLILauncher {
         } else displayHelpAndExit();
     }
 
+//    ['.', '--addPlugin=countCommits', '--addPlugin=myPlugin']
+
     static Optional<Configuration> makeConfigFromCommandLineArgs(String[] args) {
         var plugins = new HashMap<String, PluginConfig>();
         var arguments = new Arguments();
@@ -62,6 +64,9 @@ public class CLILauncher {
             switch (plugin) {
                 case "countCommits":
                     plugins.put(CountCommitsPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countAuthors":
+                    plugins.put("myPlugin", new PluginConfig());
                     break;
             }
         }
