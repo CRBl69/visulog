@@ -1,6 +1,12 @@
 package up.visulog.analyzer;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AnalyzerResult {
     public List<AnalyzerPlugin.Result> getSubResults() {
@@ -15,10 +21,37 @@ public class AnalyzerResult {
 
     @Override
     public String toString() {
-        return subResults.stream().map(AnalyzerPlugin.Result::getResultAsString).reduce("", (acc, cur) -> acc + "\n" + cur);
+        return subResults
+            .stream()
+            .map(AnalyzerPlugin.Result::getResultAsString)
+            .reduce("", (acc, cur) -> acc + "\n" + cur);
     }
 
-    public String toHTML() {
-        return "<html><body>"+subResults.stream().map(AnalyzerPlugin.Result::getResultAsHtmlDiv).reduce("", (acc, cur) -> acc + cur) + "</body></html>";
+    public String toJSON() {
+        try {
+            return new ObjectMapper().writeValueAsString(
+                subResults
+                    .stream()
+                    .map(AnalyzerPlugin.Result::getResult)
+                    .collect(Collectors.toList())
+            );
+        } catch(JsonProcessingException e) {
+            System.err.printf("Error while stringifying JSON");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return "[]";
+    }
+
+    public void toJSONFile(String filename) {
+        try {
+            FileWriter file = new FileWriter(filename);
+            file.write(this.toJSON());
+            file.close();
+        } catch (IOException e) {
+            System.err.printf("Could not output JSON to %s\n", filename);
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 }

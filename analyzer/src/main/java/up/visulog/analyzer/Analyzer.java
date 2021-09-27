@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 public class Analyzer {
     private final Configuration config;
 
-    private AnalyzerResult result;
-
     public Analyzer(Configuration config) {
         this.config = config;
     }
