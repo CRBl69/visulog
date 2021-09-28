@@ -28,9 +28,18 @@ public class AnalyzerResult {
             .reduce("", (acc, cur) -> acc + "\n" + cur);
     }
 
-    public String toJSON() {
+    /**
+     * Helper function for JSON generation
+     * @param identation whether to generate JSON with identation or not
+     * @return a stringified JSON
+     */
+    private String _JSON(boolean identation) {
         try {
-            return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(
+            var mapper = new ObjectMapper();
+            if(identation) {
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            }
+            return mapper.writeValueAsString(
                 subResults
                     .stream()
                     .collect(Collectors.toList())
@@ -43,13 +52,27 @@ public class AnalyzerResult {
         return "[]";
     }
 
+    /**
+     * @return an idented stringified JSON containing
+     * the data of all plugins
+     */
+    public String toJSON() {
+        return _JSON(true);
+    }
+
+    /**
+     * Outputs the data of all plugins to the given file
+     * @param filename the name of the file the JSON will be outputed to
+     * @throws IOException in case the program can't write to the file
+     */
     public void toJSONFile(String filename) {
         try {
             FileWriter file = new FileWriter(filename);
-            file.write(this.toJSON());
+            file.write(this._JSON(false));
             file.close();
-        } catch (IOException e) {
-            System.err.printf("Could not output JSON to %s\n", filename);
+        } catch(IOException e) {
+            System.err.println("Could not save JSON to file, printing to stderr and exiting instead");
+            System.err.println(this.toJSON());
             e.printStackTrace();
             System.exit(1);
         }
