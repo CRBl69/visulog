@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class AnalyzerResult {
     public List<AnalyzerPlugin.Result> getSubResults() {
@@ -29,14 +30,13 @@ public class AnalyzerResult {
 
     public String toJSON() {
         try {
-            return new ObjectMapper().writeValueAsString(
+            return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(
                 subResults
                     .stream()
-                    .map(AnalyzerPlugin.Result::getResult)
                     .collect(Collectors.toList())
             );
         } catch(JsonProcessingException e) {
-            System.err.printf("Error while stringifying JSON");
+            System.err.println("Error while stringifying JSON");
             e.printStackTrace();
             System.exit(1);
         }

@@ -42,13 +42,17 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
             return commitsPerAuthor;
         }
 
+        public String getPluginName() {
+            return "countCommits";
+        }
+
         @Override
         public String getResultAsString() {
             return commitsPerAuthor.toString();
         }
 
         @Override
-        public Object getResult() {
+        public Object getData() {
             return new HashMap<String, Integer>(commitsPerAuthor);
         }
     }
