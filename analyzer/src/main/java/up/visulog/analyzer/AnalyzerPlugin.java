@@ -1,29 +1,12 @@
 package up.visulog.analyzer;
 
-import java.util.ArrayList;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import up.visulog.config.PluginConfig;
+
 public interface AnalyzerPlugin {
     interface Result {
-        class Options {
-            private ArrayList<String> charts;
-
-            Options() {
-                this.charts = new ArrayList<String>();
-            }
-
-            public ArrayList<String> getCharts() {
-                return new ArrayList<String>(this.charts);
-            }
-
-            @JsonIgnore
-            public Options addChart(String chartName) {
-                this.charts.add(chartName);
-                return this;
-            }
-        }
 
         @JsonIgnore
         String getResultAsString();
@@ -52,7 +35,7 @@ public interface AnalyzerPlugin {
          * @return the options of the plugin
          */
         @JsonProperty("options")
-        Options getPluginOptions();
+        PluginConfig getPluginOptions();
 
         /**
          * Generates an unique identifier for each requested

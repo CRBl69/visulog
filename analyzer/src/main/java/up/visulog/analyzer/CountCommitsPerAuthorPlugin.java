@@ -1,6 +1,7 @@
 package up.visulog.analyzer;
 
 import up.visulog.config.Configuration;
+import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
 
 import java.util.ArrayList;
@@ -10,15 +11,18 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
+    public static final String name = "Count commits";
     private final Configuration configuration;
     private Result result;
+    private PluginConfig options;
 
     public CountCommitsPerAuthorPlugin(Configuration generalConfiguration) {
         this.configuration = generalConfiguration;
+        this.options = generalConfiguration.getPluginConfigs().remove(CountCommitsPerAuthorPlugin.name);
     }
 
-    static Result processLog(List<Commit> gitLog) {
-        var result = new Result();
+    Result processLog(List<Commit> gitLog) {
+        var result = new Result(this.options);
         for (var commit : gitLog) {
             var nb = result.commitsPerAuthor.getOrDefault(commit.author, 0);
             result.commitsPerAuthor.put(commit.author, nb + 1);
@@ -38,6 +42,13 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
     }
 
     static class Result implements AnalyzerPlugin.Result {
+        private PluginConfig options;
+        private final Map<String, Integer> commitsPerAuthor = new HashMap<>();
+
+        Result(PluginConfig options) {
+            this.options = options;
+        }
+
         class CommitData {
             private String commiter;
             private int commits;
@@ -54,21 +65,21 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
                 return commits;
             }
         }
-        private final Map<String, Integer> commitsPerAuthor = new HashMap<>();
 
+        @Override
         public String getPluginName() {
-            return "countCommits";
+            return CountCommitsPerAuthorPlugin.name;
         }
 
+        @Override
         public String getId() {
             var uuid = UUID.randomUUID().toString();
             return uuid;
         }
 
-        public Options getPluginOptions() {
-            return new Options()
-                .addChart("bars")
-                .addChart("pie");
+        @Override
+        public PluginConfig getPluginOptions() {
+            return this.options;
         }
 
         @Override
