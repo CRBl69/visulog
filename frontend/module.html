@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visulog - Module</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
 </head>
 <body>
     <div id="header">
@@ -15,7 +15,7 @@
     <div id="charts-selector-container">
         <div id="charts-selector"></div>
     </div>
-    <div id="chart"></div>
+    <canvas id="chart"></canvas>
     <script>
         let chartsSelector = document.querySelector('#charts-selector');
 
@@ -41,57 +41,61 @@
         }
 
         function displayChart(chart) {
-            document.querySelector('#chart').innerHTML = '';
+            var ctx = document.getElementById('chart').getContext('2d');
             switch(chart) {
                 case 'bars':
-                    renderBars();
+                    renderBars(ctx);
                     break;
                 case 'pie':
-                    renderPie();
+                    renderPie(ctx);
+                    break;
+                case 'doughnut':
+                    renderDoughnut(ctx);
                     break;
             }
         }
 
-        function renderBars() {
-            var chart = new CanvasJS.Chart("chart", {
-                title:{
-                    text: module.name
-                },
-                axisY: {
-                    minimum : 0
-                },
-                data: [
-                    {
-                        type: "column",
-                        dataPoints: module.data.map(a => {
-                            let b = {};
-                            b.label = a.commiter;
-                            b.y = a.commits;
-                            return b;
-                        })
-                    }
-                ]
+        function renderBars(ctx) {
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(module.data),
+                    datasets: [{
+                        label: '# of Votes',
+                        data: Object.values(module.data),
+                        backgroundColor: Object.entries(module.data).map(a => randomColor())
+                    }]
+                }
             });
-            chart.render();
         }
-        function renderPie() {
-            var chart = new CanvasJS.Chart("chart", {
-                title:{
-                    text: module.name
-                },
-                data: [
-                    {
-                        type: "pie",
-                        dataPoints: module.data.map(a => {
-                            let b = {};
-                            b.indexLabel = a.commiter.replace(/<[^>]*@[^>]*>/g, '');
-                            b.y = a.commits;
-                            return b;
-                        })
-                    }
-                ]
+        function renderPie(ctx) {
+            var chart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(module.data),
+                    datasets: [{
+                        label: '# of Votes',
+                        data: Object.values(module.data),
+                        backgroundColor: Object.entries(module.data).map(a => randomColor())
+                    }]
+                }
             });
-            chart.render();
+        }
+        function renderDoughnut(ctx) {
+            var chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(module.data),
+                    datasets: [{
+                        label: '# of Votes',
+                        data: Object.values(module.data),
+                        backgroundColor: Object.entries(module.data).map(a => randomColor())
+                    }]
+                }
+            });
+        }
+        function randomColor() {
+            return `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.random()*0.5+0.5})`
         }
     </script>
 </body>
