@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 public class Analyzer {
     private final Configuration config;
 
-    private AnalyzerResult result;
-
     public Analyzer(Configuration config) {
         this.config = config;
     }
@@ -36,7 +34,7 @@ public class Analyzer {
     // TODO: find a way so that the list of plugins is not hardcoded in this factory
     private Optional<AnalyzerPlugin> makePlugin(String pluginName, PluginConfig pluginConfig) {
         switch (pluginName) {
-            case "countCommits" : return Optional.of(new CountCommitsPerAuthorPlugin(config));
+            case CountCommitsPerAuthorPlugin.name : return Optional.of(new CountCommitsPerAuthorPlugin(config));
             default : return Optional.empty();
         }
     }

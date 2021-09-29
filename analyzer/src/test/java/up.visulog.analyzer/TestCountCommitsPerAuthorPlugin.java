@@ -19,8 +19,8 @@ public class TestCountCommitsPerAuthorPlugin {
             log.add(new CommitBuilder("").setAuthor(authors[i % 3]).createCommit());
         }
         var res = CountCommitsPerAuthorPlugin.processLog(log);
-        assertEquals(authors.length, res.getCommitsPerAuthor().size());
-        var sum = res.getCommitsPerAuthor().values()
+        assertEquals(authors.length, res.getData().size());
+        var sum = res.getData().values()
                 .stream().reduce(0, Integer::sum);
         assertEquals(entries, sum.longValue());
     }

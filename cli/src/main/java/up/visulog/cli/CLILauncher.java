@@ -1,6 +1,7 @@
 package up.visulog.cli;
 
 import up.visulog.analyzer.Analyzer;
+import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 
@@ -15,7 +16,7 @@ public class CLILauncher {
         if (config.isPresent()) {
             var analyzer = new Analyzer(config.get());
             var results = analyzer.computeResults();
-            System.out.println(results.toHTML());
+            System.out.println(results.toJSON());
         } else displayHelpAndExit();
     }
 
@@ -35,9 +36,9 @@ public class CLILauncher {
 
                             // Let's just trivially do this, before the TODO is fixed:
 
-                            if (pValue.equals("countCommits")) plugins.put("countCommits", new PluginConfig() {
-                            });
-
+                            if (pValue.equals("countCommits")) {
+                                plugins.put(CountCommitsPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
+                            }
                             break;
                         case "--loadConfigFile":
                             // TODO (load options from a file)
