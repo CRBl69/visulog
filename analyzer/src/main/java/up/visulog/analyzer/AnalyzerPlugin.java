@@ -1,10 +1,30 @@
 package up.visulog.analyzer;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public interface AnalyzerPlugin {
     interface Result {
+        class Options {
+            private ArrayList<String> charts;
+
+            Options() {
+                this.charts = new ArrayList<String>();
+            }
+
+            public ArrayList<String> getCharts() {
+                return new ArrayList<String>(this.charts);
+            }
+
+            @JsonIgnore
+            public Options addChart(String chartName) {
+                this.charts.add(chartName);
+                return this;
+            }
+        }
+
         @JsonIgnore
         String getResultAsString();
 
@@ -25,6 +45,23 @@ public interface AnalyzerPlugin {
          */
         @JsonProperty("name")
         String getPluginName();
+
+        /**
+         * This is useful in order to know how to render the
+         * chart on the front end
+         * @return the options of the plugin
+         */
+        @JsonProperty("options")
+        Options getPluginOptions();
+
+        /**
+         * Generates an unique identifier for each requested
+         * plugin, in order to differentiate them in the
+         * frontend
+         * @return a UUID as a string
+         */
+        @JsonProperty("id")
+        String getId();
     }
 
     /**
