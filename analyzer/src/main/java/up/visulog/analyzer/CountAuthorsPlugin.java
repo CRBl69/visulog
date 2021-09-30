@@ -2,20 +2,28 @@ package up.visulog.analyzer;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
+
 
 import up.visulog.config.Configuration;
 import up.visulog.gitrawdata.Commit;
+import up.visulog.config.PluginConfig;
 
-class MyPlugin implements AnalyzerPlugin {
+
+public class CountAuthorsPlugin implements AnalyzerPlugin {
     MyResult result; 
     Configuration configuration;
+    private PluginConfig options;
+    public static final String name = "Count authors";
+
     
-    public MyPlugin(Configuration generalConfiguration) {
+    public CountAuthorsPlugin(Configuration generalConfiguration) {
+        this.options = generalConfiguration.getPluginConfigs().remove(CountAuthorsPlugin.name);
         this.configuration = generalConfiguration;
     }
 
     MyResult countAuthors(List<Commit> log) {
-        var result = new MyResult();
+        var result = new MyResult(this.options);
 
         for (var commit : log) {
             result.authorSet.add(commit.author);
@@ -38,10 +46,33 @@ class MyPlugin implements AnalyzerPlugin {
 
     static class MyResult implements AnalyzerPlugin.Result {
         HashSet<String> authorSet;
+        private PluginConfig options;
+
+        MyResult(PluginConfig options) {
+            this.authorSet = new HashSet<String> ();
+            this.options = options;
+        }
+
+        @Override
+        public String getId() {
+            var uuid = UUID.randomUUID().toString();
+            return uuid;
+        }
+
+        @Override
+        public PluginConfig getPluginOptions() {
+            return this.options;
+        }
+
+        @Override
+        public String getPluginName() {
+            return CountAuthorsPlugin.name;
+        }
 
         public MyResult() {
             authorSet = new HashSet();
         }
+        
         @Override
         public String getResultAsString() {
             // TODO Auto-generated method stub
@@ -49,15 +80,8 @@ class MyPlugin implements AnalyzerPlugin {
         }
 
         @Override
-        public String getResultAsHtmlDiv() {
-            String html = "<div><ul>";
-
-            for (var author : authorSet) {
-                html += "<li>" + author + "</li>";
-            }
-
-            html += "</ul></div>";
-            return html;
+        public Integer getData() {
+            return this.authorSet.size();
         }
 
     }

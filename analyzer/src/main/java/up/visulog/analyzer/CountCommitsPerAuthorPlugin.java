@@ -25,7 +25,7 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
         var result = new Result(this.options);
         for (var commit : gitLog) {
             var nb = result.commitsPerAuthor.getOrDefault(commit.author, 0);
-            result.commitsPerAuthor.put(commit.author, nb + 1);
+            result.commitsPerAuthor.put(commit.author, nb+1);
         }
         return result;
     }
