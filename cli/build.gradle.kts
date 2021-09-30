@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":analyzer"))
     implementation(project(":config"))
     implementation(project(":gitrawdata"))
+    implementation("com.beust:jcommander:1.78")
     testImplementation("junit:junit:4.+")
 }
 
