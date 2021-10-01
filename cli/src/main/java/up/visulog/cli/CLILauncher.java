@@ -2,6 +2,7 @@ package up.visulog.cli;
 
 import up.visulog.analyzer.Analyzer;
 import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
+import up.visulog.analyzer.CountAuthorsPlugin;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 
@@ -42,6 +43,7 @@ class Arguments {
 
 public class CLILauncher {
 
+
     public static void main(String[] args) {
         var config = makeConfigFromCommandLineArgs(args);
         if (config.isPresent()) {
@@ -50,6 +52,8 @@ public class CLILauncher {
             System.out.println(results.toJSON());
         } else displayHelpAndExit();
     }
+
+//    ['.', '--addPlugin=countCommits', '--addPlugin=myPlugin']
 
     static Optional<Configuration> makeConfigFromCommandLineArgs(String[] args) {
         var plugins = new HashMap<String, PluginConfig>();
@@ -62,6 +66,9 @@ public class CLILauncher {
             switch (plugin) {
                 case "countCommits":
                     plugins.put(CountCommitsPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countAuthors":
+                    plugins.put(CountAuthorsPlugin.name, new PluginConfig().addChart("bars"));
                     break;
             }
         }

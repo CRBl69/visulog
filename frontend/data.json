@@ -1,23 +1,10 @@
 [ {
-  "id" : "fddd2a1b-25ae-4f63-9be5-f6827e9e9c5c",
-  "data" : [ {
-    "commiter" : "Bogdan Crisan <crbl.me@gmail.com>",
-    "commits" : 6
-  }, {
-    "commiter" : "CRBl_ <crbl.me@gmail.com>",
-    "commits" : 2
-  }, {
-    "commiter" : "Aldric Degorre <adegorre@irif.fr>",
-    "commits" : 12
-  }, {
-    "commiter" : "Colin Gonzalez <colin@nomadic-labs.com>",
-    "commits" : 1
-  }, {
-    "commiter" : "Xavier Denis <xldenis@gmail.com>",
-    "commits" : 3
-  } ],
-  "name" : "countCommits",
+  "id" : "6d269304-5fcf-4c96-ad5d-3f4ff72808d9",
+  "data" : 5,
+  "name" : "Count authors",
   "options" : {
-    "charts" : [ "bars", "pie" ]
+    "charts" : [ "bars" ],
+    "toggledOptions" : [ ],
+    "valueOptions" : [ ]
   }
 } ]
