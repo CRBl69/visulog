@@ -3,6 +3,8 @@ package up.visulog.analyzer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import up.visulog.config.Configuration;
@@ -80,8 +82,10 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
         }
 
         @Override
-        public Integer getData() {
-            return this.authorSet.size();
+        public Map<Object, Object> getData() {
+            var map = new HashMap<Object, Object>();
+            map.put("totalAuthors", this.authorSet.size());
+            return map;
         }
 
     }
