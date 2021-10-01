@@ -63,7 +63,7 @@ public class CLILauncher {
         if (config.isPresent()) {
             var analyzer = new Analyzer(config.get());
             var results = analyzer.computeResults();
-            System.out.println(results.toJSON());
+            System.out.println(results.toJSON(true));
         } else displayHelpAndExit();
     }
 

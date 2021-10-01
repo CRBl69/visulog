@@ -53,26 +53,28 @@ public class AnalyzerResult {
     }
 
     /**
+     * @param identation whether to generate JSON with identation or not
      * @return an idented stringified JSON containing
      * the data of all plugins
      */
-    public String toJSON() {
-        return _JSON(true);
+    public String toJSON(boolean identation) {
+        return _JSON(identation);
     }
 
     /**
      * Outputs the data of all plugins to the given file
      * @param filename the name of the file the JSON will be outputed to
+     * @param identation whether to generate JSON with identation or not
      * @throws IOException in case the program can't write to the file
      */
-    public void toJSONFile(String filename) {
+    public void toJSONFile(String filename, boolean identation) {
         try {
             FileWriter file = new FileWriter(filename);
-            file.write(this._JSON(false));
+            file.write(this._JSON(identation));
             file.close();
         } catch(IOException e) {
             System.err.println("Could not save JSON to file, printing to stderr and exiting instead");
-            System.err.println(this.toJSON());
+            System.err.println(this.toJSON(true));
             e.printStackTrace();
             System.exit(1);
         }
