@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
-    public static final String name = "Count commits";
+    public static final String name = "countCommits";
     private final Configuration configuration;
     private Result result;
     private PluginConfig options;

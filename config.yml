@@ -1,0 +1,13 @@
+path: .
+plugins:
+  - name : countCommits
+    options:
+      charts:
+        - bars
+        - pie
+      valueOptions:
+        displayName : Compter les commits par personne
+        width : 300
+      toggleOptions:
+        - nocolor
+        - cute
