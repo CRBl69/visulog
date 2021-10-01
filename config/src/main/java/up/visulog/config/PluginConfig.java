@@ -11,12 +11,12 @@ import java.io.FileReader;
 public class PluginConfig {
     private ArrayList<String> charts;
     private ArrayList<String> toggledOptions;
-    private ArrayList<HashMap<String, String>> valueOptions;
+    private HashMap<String, String> valueOptions;
 
     public PluginConfig() {
         this.charts = new ArrayList<String>();
         this.toggledOptions = new ArrayList<String>();
-        this.valueOptions = new ArrayList<HashMap<String, String>>();
+        this.valueOptions = new HashMap<String, String>();
     }
 
     public ArrayList<String> getCharts() {
@@ -39,15 +39,13 @@ public class PluginConfig {
         return this;
     }
 
-    public ArrayList<HashMap<String, String>> getValueOptions() {
-        return new ArrayList<HashMap<String, String>>(this.valueOptions);
+    public HashMap<String, String> getValueOptions() {
+        return new HashMap<String, String>(this.valueOptions);
     }
 
     @JsonIgnore
     public PluginConfig addValueOption(String optionName, String optionValue) {
-        var hs = new HashMap<String, String>();
-        hs.put(optionName, optionValue);
-        this.valueOptions.add(hs);
+        this.valueOptions.put(optionName, optionValue);
         return this;
     }
 }

@@ -83,7 +83,6 @@ public class CLILauncher {
         if(!arguments.getConfigFile().equals("")) {
             try {
                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-
                 File myObj = new File(arguments.getConfigFile());
                 Scanner myReader = new Scanner(myObj);
                 String yamlFile = "";
@@ -93,10 +92,6 @@ public class CLILauncher {
                 myReader.close();
                 yamlObject = mapper.readValue(yamlFile, ConfigFile.class);
                 ConfigFile cfg = (ConfigFile)yamlObject;
-                // System.out.println(cfg.path);
-                // System.out.println(cfg.plugins.size());
-                // System.out.println(cfg.plugins.get(0).name);
-                // System.out.println(cfg.plugins.get(0).options.charts.get(0));
                 if(cfg.path != null) {
                     path = Paths.get(cfg.path);
                 }
@@ -121,7 +116,7 @@ public class CLILauncher {
                                 }
                             }
                         }
-                        plugins.put(resolvePluginName(plugin.name), pluginConfig);
+                        plugins.put(plugin.name, pluginConfig);
                     }
                 }
             } catch (JsonMappingException e){
@@ -158,12 +153,5 @@ public class CLILauncher {
         System.out.println("Wrong command...");
         //TODO: print the list of options and their syntax
         System.exit(0);
-    }
-    private static String resolvePluginName(String name) {
-        switch (name) {
-            case "countCommits":
-                return CountCommitsPerAuthorPlugin.name;
-        }
-        return "";
     }
 }

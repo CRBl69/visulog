@@ -16,7 +16,7 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
     MyResult result; 
     Configuration configuration;
     private PluginConfig options;
-    public static final String name = "Count authors";
+    public static final String name = "countAuthors";
 
     
     public CountAuthorsPlugin(Configuration generalConfiguration) {

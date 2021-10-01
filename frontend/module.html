@@ -13,90 +13,12 @@
         Visulog
     </div>
     <div id="charts-selector-container">
-        <div id="charts-selector"></div>
+        <form id="charts-selector"></form>
+    </div>
+    <div id="module-selector-container">
+        <form id="module-selector"></form>
     </div>
     <canvas id="chart"></canvas>
-    <script>
-        let chartsSelector = document.querySelector('#charts-selector');
-
-        let gitData = JSON.parse(localStorage.getItem('gitData'));
-
-        let params = new URLSearchParams(location.search);
-        let moduleId = params.get("id");
-
-        console.log(moduleId)
-
-        let module = gitData.find(m => m.id == moduleId);
-        console.log(module);
-
-        document.querySelector('#header').innerText = `Visulog - ${module.name}`;
-
-        for(let chart of module.options.charts) {
-            let chartButton = document.createElement('button');
-            chartButton.innerText = chart;
-            chartButton.onclick = () => {
-                displayChart(chart);
-            }
-            chartsSelector.append(chartButton);
-        }
-
-        function displayChart(chart) {
-            var ctx = document.getElementById('chart').getContext('2d');
-            switch(chart) {
-                case 'bars':
-                    renderBars(ctx);
-                    break;
-                case 'pie':
-                    renderPie(ctx);
-                    break;
-                case 'doughnut':
-                    renderDoughnut(ctx);
-                    break;
-            }
-        }
-
-        function renderBars(ctx) {
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(module.data),
-                    datasets: [{
-                        label: module.name,
-                        data: Object.values(module.data),
-                        backgroundColor: Object.entries(module.data).map(a => randomColor())
-                    }]
-                }
-            });
-        }
-        function renderPie(ctx) {
-            var chart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(module.data),
-                    datasets: [{
-                        label: module.name,
-                        data: Object.values(module.data),
-                        backgroundColor: Object.entries(module.data).map(a => randomColor())
-                    }]
-                }
-            });
-        }
-        function renderDoughnut(ctx) {
-            var chart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(module.data),
-                    datasets: [{
-                        label: module.name,
-                        data: Object.values(module.data),
-                        backgroundColor: Object.entries(module.data).map(a => randomColor())
-                    }]
-                }
-            });
-        }
-        function randomColor() {
-            return `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.random()*0.5+0.5})`
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -18,12 +18,8 @@
             <input type="file" id="json-data"/>
             <button id="go-button">Go !</button>
         </div>
-        <div id="modules-container">
-            Modules...
-        </div>
     </div>
     <script>
-        let container = document.querySelector("#modules-container");
         let goButton = document.querySelector('#go-button');
         let fileInput = document.querySelector('#json-data');
 
@@ -39,21 +35,8 @@
                     displayModules();
             });
             reader.readAsText(file);
+            location.href = 'module.html';
         })
-
-        function displayModules() {
-            container.innerHTML = "";
-            let list = document.createElement('ul');
-            for(let module of git) {
-                let moduleHTML = document.createElement('li');
-                let moduleHTMLa = document.createElement('a');
-                moduleHTMLa.innerText = module.name;
-                moduleHTMLa.href = `module.html?id=${module.id}`;
-                moduleHTML.append(moduleHTMLa);
-                list.append(moduleHTML);
-            }
-            container.append(list);
-        }
     </script>
 </body>
 </html>
