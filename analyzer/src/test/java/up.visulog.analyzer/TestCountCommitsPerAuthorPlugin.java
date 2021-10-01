@@ -8,10 +8,10 @@
 
 // import static org.junit.Assert.assertEquals;
 
-public class TestCountCommitsPerAuthorPlugin {
+// public class TestCountCommitsPerAuthorPlugin {
     /* Let's check whether the number of authors is preserved and that the sum of the commits of each author is equal to the total number of commits */
-    @Test
-    public void checkCommitSum() {
+    // @Test
+    // public void checkCommitSum() {
         // var log = new ArrayList<Commit>();
         // String[] authors = {"foo", "bar", "baz"};
         // var entries = 20;
@@ -24,5 +24,5 @@ public class TestCountCommitsPerAuthorPlugin {
         // var sum = res.getData().values()
         //         .stream().reduce(0, Integer::sum);
         // assertEquals(entries, sum.longValue());
-    }
-}
+    // }
+// }

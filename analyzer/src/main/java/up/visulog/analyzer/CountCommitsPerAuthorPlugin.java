@@ -4,7 +4,6 @@ import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,23 +48,6 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
             this.options = options;
         }
 
-        class CommitData {
-            private String commiter;
-            private int commits;
-
-            CommitData(String commiter, int commits) {
-                this.commiter = commiter;
-                this.commits = commits;
-            }
-
-            public String getCommiter() {
-                return commiter;
-            }
-            public int getCommits() {
-                return commits;
-            }
-        }
-
         @Override
         public String getPluginName() {
             return CountCommitsPerAuthorPlugin.name;
@@ -88,12 +70,8 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
         }
 
         @Override
-        public List<CommitData>getData() {
-            var list = new ArrayList<CommitData>();
-            for(var element: commitsPerAuthor.entrySet()) {
-                list.add(new CommitData(element.getKey(), element.getValue()));
-            }
-            return list;
+        public Map<Object, Object>getData() {
+            return new HashMap<Object, Object>(commitsPerAuthor);
         }
     }
 }

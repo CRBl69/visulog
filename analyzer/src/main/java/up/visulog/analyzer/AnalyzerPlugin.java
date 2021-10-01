@@ -1,5 +1,7 @@
 package up.visulog.analyzer;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,7 +20,7 @@ public interface AnalyzerPlugin {
          * @return an object that represents the data of the plugin
          */
         @JsonProperty("data")
-        Object getData();
+        Map<Object, Object> getData();
 
         /**
          * This is useful in order to know by which plugin the

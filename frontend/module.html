@@ -6,93 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visulog - Module</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
 </head>
 <body>
     <div id="header">
         Visulog
     </div>
     <div id="charts-selector-container">
-        <div id="charts-selector"></div>
+        <form id="charts-selector"></form>
     </div>
-    <div id="chart"></div>
-    <script>
-        let chartsSelector = document.querySelector('#charts-selector');
-
-        let gitData = JSON.parse(localStorage.getItem('gitData'));
-
-        let params = new URLSearchParams(location.search);
-        let moduleId = params.get("id");
-
-        console.log(moduleId)
-
-        let module = gitData.find(m => m.id == moduleId);
-        console.log(module);
-
-        document.querySelector('#header').innerText = `Visulog - ${module.name}`;
-
-        for(let chart of module.options.charts) {
-            let chartButton = document.createElement('button');
-            chartButton.innerText = chart;
-            chartButton.onclick = () => {
-                displayChart(chart);
-            }
-            chartsSelector.append(chartButton);
-        }
-
-        function displayChart(chart) {
-            document.querySelector('#chart').innerHTML = '';
-            switch(chart) {
-                case 'bars':
-                    renderBars();
-                    break;
-                case 'pie':
-                    renderPie();
-                    break;
-            }
-        }
-
-        function renderBars() {
-            var chart = new CanvasJS.Chart("chart", {
-                title:{
-                    text: module.name
-                },
-                axisY: {
-                    minimum : 0
-                },
-                data: [
-                    {
-                        type: "column",
-                        dataPoints: module.data.map(a => {
-                            let b = {};
-                            b.label = a.commiter;
-                            b.y = a.commits;
-                            return b;
-                        })
-                    }
-                ]
-            });
-            chart.render();
-        }
-        function renderPie() {
-            var chart = new CanvasJS.Chart("chart", {
-                title:{
-                    text: module.name
-                },
-                data: [
-                    {
-                        type: "pie",
-                        dataPoints: module.data.map(a => {
-                            let b = {};
-                            b.indexLabel = a.commiter.replace(/<[^>]*@[^>]*>/g, '');
-                            b.y = a.commits;
-                            return b;
-                        })
-                    }
-                ]
-            });
-            chart.render();
-        }
-    </script>
+    <div id="module-selector-container">
+        <form id="module-selector"></form>
+    </div>
+    <canvas id="chart"></canvas>
+    <script src="script.js"></script>
 </body>
 </html>

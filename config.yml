@@ -1,13 +1,20 @@
-path: .
+path: "."
 plugins:
-  - name : countCommits
+  - name: countCommits
     options:
       charts:
         - bars
-        - pie
+        - doughnut
+        - line
       valueOptions:
-        displayName : Compter les commits par personne
-        width : 300
+        displayName: Compter les commits par personne
+        width: 300
       toggleOptions:
         - nocolor
         - cute
+  - name: countAuthors
+    options:
+      charts:
+        - pie
+      valueOptions:
+        displayName: Compter le nombre total de commits
