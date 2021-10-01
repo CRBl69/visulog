@@ -5,6 +5,7 @@ import up.visulog.config.PluginConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,12 +18,16 @@ public class Analyzer {
 
     public AnalyzerResult computeResults() {
         List<AnalyzerPlugin> plugins = new ArrayList<>();
-        for (var pluginConfigEntry: config.getPluginConfigs().entrySet()) {
-            var pluginName = pluginConfigEntry.getKey();
-            var pluginConfig = pluginConfigEntry.getValue();
+
+        var pluginsConfig = new ConcurrentHashMap<String, PluginConfig>(config.getPluginConfigs());
+
+        pluginsConfig.forEach((k, v) -> {
+            var pluginName = k;
+            var pluginConfig = v;
             var plugin = makePlugin(pluginName, pluginConfig);
             plugin.ifPresent(plugins::add);
-        }
+        });
+
         // run all the plugins
         // TODO: try running them in parallel
         for (var plugin: plugins) plugin.run();
