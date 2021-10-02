@@ -39,6 +39,12 @@ class Arguments {
     @Parameter(names = { "-s", "--justSaveConfigFile" }, description = "Charger un fichier de configuration")
     private boolean justSave;
 
+    @Parameter(names = { "-i", "--indent" }, description = "Indenter l'affichage")
+    private boolean indentation = false;
+
+    @Parameter(names = { "-o", "--output" }, description = "Mettre le contenu dans un fichier")
+    private String outputFile = "";
+
     public List<String> getPlugins() {
         if(this.plugins != null)
             return new ArrayList<String>(this.plugins);
@@ -53,17 +59,27 @@ class Arguments {
     public String getConfigFile() {
         return this.configFile;
     }
+
+    public String getOutputFile() {
+        return this.outputFile;
+    }
+
+    public boolean isIndented() {
+        return this.indentation;
+    }
 }
 
 public class CLILauncher {
-
-
     public static void main(String[] args) {
         var config = makeConfigFromCommandLineArgs(args);
         if (config.isPresent()) {
             var analyzer = new Analyzer(config.get());
             var results = analyzer.computeResults();
-            System.out.println(results.toJSON(true));
+            if(!config.get().outputFile().equals("")) {
+                results.toJSONFile(config.get().outputFile(), config.get().isIndented());
+            } else {
+                System.out.println(results.toJSON(config.get().isIndented()));
+            }
         } else displayHelpAndExit();
     }
 
@@ -135,7 +151,6 @@ public class CLILauncher {
             path = Paths.get(arguments.getGitPath());
         }
 
-        
         for (var plugin : arguments.getPlugins()) {
             switch (plugin) {
                 case "countCommits":
@@ -146,7 +161,10 @@ public class CLILauncher {
                     break;
             }
         }
-        return Optional.of(new Configuration(path, plugins));
+        var configuration = new Configuration(path, plugins);
+        configuration.setIndent(arguments.isIndented());
+        configuration.setOutputFile(arguments.getOutputFile());
+        return Optional.of(configuration);
     }
 
     private static void displayHelpAndExit() {
