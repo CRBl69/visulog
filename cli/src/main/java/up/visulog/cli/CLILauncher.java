@@ -81,7 +81,7 @@ public class CLILauncher {
             var analyzer = new Analyzer(config.get());
             var results = analyzer.computeResults();
             if(config.get().getPort() != -1) {
-                ServeFrontend.serve(config.get().getPort());
+                ServeFrontend.serve(config.get().getPort(), results.toJSON(false));
             } else if(!config.get().outputFile().equals("")) {
                 results.toJSONFile(config.get().outputFile(), config.get().isIndented());
             } else {
