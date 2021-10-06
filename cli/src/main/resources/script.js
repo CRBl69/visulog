@@ -38,6 +38,7 @@ fetch('data.json').then(res => res.json()).then(res => gitData = res).then(() =>
 });
 
 function displayCharts() {
+    // document.getElementById('chart')
     if(chartObject) chartObject.destroy();
     let chartType;
     for(let chart of chartsSelector) {
@@ -61,6 +62,10 @@ function displayCharts() {
         }
     };
     chartObject = new Chart(ctx, chartConfig);
+    if(module.options?.valueOptions?.width) {
+        document.getElementById('chart').parentNode.style.width = module.options.valueOptions.width + 'px';
+        console.log('test');
+    }
 }
 
 function randomColor() {
