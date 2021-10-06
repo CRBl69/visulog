@@ -14,6 +14,7 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.IOException;
 import java.io.FileNotFoundException;
 
 import com.beust.jcommander.JCommander;
@@ -81,7 +82,12 @@ public class CLILauncher {
             var analyzer = new Analyzer(config.get());
             var results = analyzer.computeResults();
             if(config.get().getPort() != -1) {
-                ServeFrontend.serve(config.get().getPort(), results.toJSON(false));
+                try {
+                    ServeFrontend.serve(config.get().getPort(), results.toJSON(false));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             } else if(!config.get().outputFile().equals("")) {
                 results.toJSONFile(config.get().outputFile(), config.get().isIndented());
             } else {
