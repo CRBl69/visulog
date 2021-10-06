@@ -69,47 +69,21 @@ Currently, it can be run through gradle too. In order to pass program arguments,
 For instance
 
 ```
-./gradlew run --args='. --addPlugin=countCommits'
+./gradlew run --args='. --addPlugin countCommits'
 ```
 
 Will count the commits of each author in the current branch of the git repository present in the current folder (".").
 
-For now, there is 5 differents program arguments:
-
-Arguments | Alternative arguments | Actions 
---------- | -------------------- | -------
--p | -addPlugin | adds the selected plugin
--c | --loadConfigFile | loads the config file
--s | --justSaveConfigFile | saves the file as the config file
--i | --indent | indents the json in the display 
--o | --output | copies the output in a json file (creates it if it does not exists yet) 
-
+PLUGINS.md lists all the progam arguments and plugins you can use in visulog.
 ### View countCommits and countAuthors in graphs
-The results of these two plugins can be displayed on different types of graphs.
+The number of authors and the number of commits by authors can be displayed in a browser on localhost
 
-Run this command:
+1. Run this command:
 ```
-./gradlew run --args="-c ../config.yml
---serve 8080"
-```
-or 
-```
-./gradlew run -q --args="-c ../config.yml -o ../data.json"
-```
-then in visulog/frontend
-```
-python3 -m http.server
-```
+./gradlew run --args="-c ../config.yml --serve 8080"
+``` 
 
-Once these commands done, check your browser in localhost, in the first command line, the port is 8080 (it depends on the port you selected previously with *--serve*). Otherwise it is 8000 if you used the python command line and you need to load the .json file (here it is data.json)
+2. Go to you localhost, the port depends on the one you choosed in the command line
 
-Now you have few options that are displayed:
-
-The types of graphs:
-- Pie (default)
-- Doughnut
-- Line
-
-What informations you want to display :
-- Count the total number of authors (countAuthors)
-- Count the number of commits by authors (countCommits)
+### Configuration files
+If you need to add or remove plugins, you can either modify "config.yml" or replace it with "--loadConfigFile" or "--justSaveConfigFile" (more info in Plugins.md)
