@@ -3,7 +3,7 @@ plugins:
   - name: countCommits
     options:
       charts:
-        - bars
+        - bar
         - doughnut
         - line
       valueOptions:
@@ -16,5 +16,6 @@ plugins:
     options:
       charts:
         - pie
+        - bar
       valueOptions:
         displayName: Compter le nombre total de commits

@@ -12,11 +12,10 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -45,6 +44,9 @@ class Arguments {
     @Parameter(names = { "-o", "--output" }, description = "Mettre le contenu dans un fichier")
     private String outputFile = "";
 
+    @Parameter(names = { "--port", "--serve" }, description = "Servir le contenu sur un port")
+    private int port = -1;
+
     public List<String> getPlugins() {
         if(this.plugins != null)
             return new ArrayList<String>(this.plugins);
@@ -58,6 +60,10 @@ class Arguments {
 
     public String getConfigFile() {
         return this.configFile;
+    }
+
+    public int getPort() {
+        return this.port;
     }
 
     public String getOutputFile() {
@@ -75,7 +81,14 @@ public class CLILauncher {
         if (config.isPresent()) {
             var analyzer = new Analyzer(config.get());
             var results = analyzer.computeResults();
-            if(!config.get().outputFile().equals("")) {
+            if(config.get().getPort() != -1) {
+                try {
+                    ServeFrontend.serve(config.get().getPort(), results.toJSON(false));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            } else if(!config.get().outputFile().equals("")) {
                 results.toJSONFile(config.get().outputFile(), config.get().isIndented());
             } else {
                 System.out.println(results.toJSON(config.get().isIndented()));
@@ -161,10 +174,7 @@ public class CLILauncher {
                     break;
             }
         }
-        var configuration = new Configuration(path, plugins);
-        configuration.setIndent(arguments.isIndented());
-        configuration.setOutputFile(arguments.getOutputFile());
-        return Optional.of(configuration);
+        return Optional.of(new Configuration(path, plugins, arguments.getPort(), arguments.getOutputFile(), arguments.isIndented()));
     }
 
     private static void displayHelpAndExit() {
