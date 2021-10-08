@@ -41,6 +41,7 @@ public class Analyzer {
         switch (pluginName) {
             case CountCommitsPerAuthorPlugin.name : return Optional.of(new CountCommitsPerAuthorPlugin(config));
             case CountAuthorsPlugin.name : return Optional.of(new CountAuthorsPlugin(config));
+            case CountLinesPerAuthorPlugin.name : return Optional.of(new CountLinesPerAuthorPlugin(config));
             default : return Optional.empty();
         }
     }
