@@ -25,12 +25,16 @@ public class Commit {
     public final String date;
     public final String author;
     public final String description;
+    public final int linesAdded;
+    public final int linesRemoved;
 
-    public Commit(String id, String author, String date, String description) {
+    public Commit(String id, String author, String date, String description, int linesAdded, int linesRemoved) {
         this.id = id;
         this.author = author;
         this.date = date;
         this.description = description;
+        this.linesAdded = linesAdded;
+        this.linesRemoved = linesRemoved;
     }
 
     @Override
@@ -58,17 +62,39 @@ public class Commit {
     /**
      * Transform a JGit revCommit into a regular Commit object.
      */
-    public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit){
+    public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit, Repository repo){
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
         var email = author.getEmailAddress();
         var time = author.getWhen().getTime();
         var timeZone = author.getTimeZone();
+
+        // Getting the number of added/deleted lines
+        // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
+        int linesDeleted = 0;
+        int linesAdded = 0
+        RevCommit parent = rCommit.parseCommit(rCommit.getParent(0).getId());
+        DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
+        df.setRepository(repo);
+        df.setDiffComparator(RawTextComparator.DEFAULT);
+        df.setDetectRenames(true);
+        List<DiffEntry> diffs;
+        diffs = df.scan(parent.getTree(), commit.getTree());
+        filesChanged = diffs.size();
+        for (DiffEntry diff : diffs) {
+            for (Edit edit : df.toFileHeader(diff).toEditList()) {
+                linesDeleted += edit.getEndA() - edit.getBeginA();
+                linesAdded += edit.getEndB() - edit.getBeginB();
+            }
+        }
+
         var commit =
             new Commit(id.getName(),
                 name + " <" + email+">",
                 stringOfTime(time, timeZone),
-                rCommit.getFullMessage());
+                rCommit.getFullMessage(),
+                linesAdded,
+                linesDeleted);
         return commit;
     }
 
@@ -84,7 +110,7 @@ public class Commit {
         try (RevWalk walk = new RevWalk(repo)) {
             RevCommit rCommit = walk.parseCommit(id);
             walk.dispose();
-            return commitOfRevCommit(id, rCommit);
+            return commitOfRevCommit(id, rCommit, repo);
         }
     }
     
