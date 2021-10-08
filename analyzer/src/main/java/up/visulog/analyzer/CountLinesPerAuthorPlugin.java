@@ -31,7 +31,7 @@ public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
 
     @Override
     public void run() {
-        result = processLog(Commit.parseLogFromCommand(configuration.getGitPath()));
+        result = processLog(Commit.getAllCommits(configuration.getGitRepo()));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
 
     static class Result implements AnalyzerPlugin.Result {
         private PluginConfig options;
-        private final Map<String, Integer> linePerAuthor = new HashMap<>();
+        private final Map<String, Integer> linePerAuthor = new HashMap<String, Integer>();
 
         Result(PluginConfig options) {
             this.options = options;

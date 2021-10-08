@@ -27,16 +27,17 @@ public class CommitBuilder {
         return this;
     }
 
-    public Commit createCommit() {
-        return new Commit(id, author, date, description);
+    public CommitBuilder setLinesAdded(int lines){
+        this.linesAdded = lines;
+        return this;
     }
 
-    public CommitBuilder setLines(int lines){
-        this.lines = lines;
+    public CommitBuilder setLinesRemoved(int lines){
+        this.linesRemoved = lines;
         return this;
     }
 
     public Commit createCommit() {
-        return new Commit(id, author, date, description, mergedFrom, lines);
+        return new Commit(id, author, date, description, linesAdded, linesRemoved);
     }
 }

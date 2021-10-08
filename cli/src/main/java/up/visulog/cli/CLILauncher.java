@@ -2,6 +2,7 @@ package up.visulog.cli;
 
 import up.visulog.analyzer.Analyzer;
 import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
+import up.visulog.analyzer.CountLinesPerAuthorPlugin;
 import up.visulog.analyzer.CountAuthorsPlugin;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
@@ -185,6 +186,9 @@ public class CLILauncher {
                     break;
                 case "countAuthors":
                     plugins.put(CountAuthorsPlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countLines":
+                    plugins.put(CountLinesPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
                     break;
             }
         }

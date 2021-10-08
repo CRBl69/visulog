@@ -14,10 +14,15 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.Edit;
+import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 public class Commit {
     // AD: FIXME: (some of) these fields could have more specialized types than String
@@ -61,8 +66,11 @@ public class Commit {
 
     /**
      * Transform a JGit revCommit into a regular Commit object.
+     * @throws IOException
+     * @throws IncorrectObjectTypeException
+     * @throws MissingObjectException
      */
-    public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit, Repository repo){
+    public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit, Repository repo) throws MissingObjectException, IncorrectObjectTypeException, IOException{
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
         var email = author.getEmailAddress();
@@ -72,21 +80,23 @@ public class Commit {
         // Getting the number of added/deleted lines
         // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
         int linesDeleted = 0;
-        int linesAdded = 0
-        RevCommit parent = rCommit.parseCommit(rCommit.getParent(0).getId());
+        int linesAdded = 0;
+        RevWalk rw = new RevWalk(repo);
+        RevCommit parent = rCommit.getParentCount() == 0 ? null :  rw.parseCommit(rCommit.getParent(0).getId());
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
         df.setRepository(repo);
         df.setDiffComparator(RawTextComparator.DEFAULT);
         df.setDetectRenames(true);
         List<DiffEntry> diffs;
-        diffs = df.scan(parent.getTree(), commit.getTree());
-        filesChanged = diffs.size();
+        diffs = df.scan(parent == null ? null : parent.getTree(), rCommit.getTree());
         for (DiffEntry diff : diffs) {
             for (Edit edit : df.toFileHeader(diff).toEditList()) {
                 linesDeleted += edit.getEndA() - edit.getBeginA();
                 linesAdded += edit.getEndB() - edit.getBeginB();
             }
         }
+        rw.close();
+        df.close();
 
         var commit =
             new Commit(id.getName(),
@@ -120,7 +130,7 @@ public class Commit {
             Git git = new Git(repo);
             Iterable<RevCommit> rCommits = git.log().all().call();
             for(var rCommit : rCommits) {
-                commits.add(commitOfRevCommit(rCommit.getId(), rCommit));
+                commits.add(commitOfRevCommit(rCommit.getId(), rCommit, repo));
             }
             git.close();
             return commits;
