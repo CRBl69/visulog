@@ -1,18 +1,19 @@
 package up.visulog.gitrawdata;
 
 import java.text.SimpleDateFormat;
-
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import java.io.IOException;
 
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.AnyObjectId;
-
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.errors.RevisionSyntaxException;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -47,28 +48,28 @@ public class Commit {
      * the git log format.
      */
     static String stringOfTime(long time, TimeZone tz) {
-	var dtfmt =
-	    new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.US);
-	dtfmt.setTimeZone(tz);
-	dtfmt.format(Long.valueOf(time));
-	return dtfmt.format(Long.valueOf(time));
+        var dtfmt =
+            new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.US);
+        dtfmt.setTimeZone(tz);
+        dtfmt.format(Long.valueOf(time));
+        return dtfmt.format(Long.valueOf(time));
     }
 
     /**
      * Transform a JGit revCommit into a regular Commit object.
      */
     public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit){
-	var  author = rCommit.getAuthorIdent();
-	var name = author.getName();
-	var email = author.getEmailAddress();
-	var time = author.getWhen().getTime();
-	var timeZone = author.getTimeZone();
-	var commit =
-	    new Commit(id.getName(),
-		       name + " <" + email+">",
-		       stringOfTime(time, timeZone),
-		       rCommit.getFullMessage());
-	return commit;
+        var author = rCommit.getAuthorIdent();
+        var name = author.getName();
+        var email = author.getEmailAddress();
+        var time = author.getWhen().getTime();
+        var timeZone = author.getTimeZone();
+        var commit =
+            new Commit(id.getName(),
+                name + " <" + email+">",
+                stringOfTime(time, timeZone),
+                rCommit.getFullMessage());
+        return commit;
     }
 
 
@@ -80,10 +81,27 @@ public class Commit {
 	throws MissingObjectException,
 	       IncorrectObjectTypeException,
 	       IOException {
-	try (RevWalk walk = new RevWalk(repo)) {
-	    RevCommit rCommit = walk.parseCommit(id);
-	    walk.dispose();
-	    return commitOfRevCommit(id, rCommit);
-	}
+        try (RevWalk walk = new RevWalk(repo)) {
+            RevCommit rCommit = walk.parseCommit(id);
+            walk.dispose();
+            return commitOfRevCommit(id, rCommit);
+        }
+    }
+    
+    public static List<Commit> getAllCommits(Repository repo) {
+        try {
+            List<Commit> commits = new ArrayList<Commit>();
+            Git git = new Git(repo);
+            Iterable<RevCommit> rCommits = git.log().all().call();
+            for(var rCommit : rCommits) {
+                commits.add(commitOfRevCommit(rCommit.getId(), rCommit));
+            }
+            git.close();
+            return commits;
+        } catch (RevisionSyntaxException | IOException | GitAPIException e) {
+            e.printStackTrace();
+            System.exit(1);
+            return null;
+        }
     }
 }
