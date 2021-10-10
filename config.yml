@@ -8,7 +8,7 @@ plugins:
         - line
       valueOptions:
         displayName: Compter les commits par personne
-        width: 300
+        width: 600
       toggleOptions:
         - nocolor
         - cute
