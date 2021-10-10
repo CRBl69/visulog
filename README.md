@@ -86,4 +86,6 @@ The number of authors and the number of commits by authors can be displayed in a
 2. Go to you localhost, the port depends on the one you choosed in the command line
 
 ### Configuration files
-If you need to add or remove plugins, you can either modify "config.yml" or replace it with "--loadConfigFile" or "--justSaveConfigFile" (more info in Plugins.md)
+If you need to add or remove plugins, you can either modify "config.yml" or replace it with "--loadConfigFile" or "--justSaveConfigFile". To convert it to json use "--output" (more info in Plugins.md)
+
+example.yml explains how a configuration file is written.

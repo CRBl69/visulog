@@ -5,7 +5,8 @@ Short | Long | Fonction
 -c | --loadConfigFile | loads the config file
 -s | --justSaveConfigFile | saves the file as the config file
 -i | --indent | indents the json in the display 
--o | --output | copies the output in a json file (creates it if it does not exist yet) 
+-o | --output | copies the output in a json file (creates it if it does not exist yet)
+--port | --serve | serves the the content on the choosen port 
 
 ___
 ## Plugins
@@ -13,6 +14,16 @@ Plugin | Fonction
 -- | --  
 countAuthors | lists the authors
 countCommits | counts the commits by authors
-
+____
+## Options
 ### countCommits
+Option | Function 
+--|--
+pie | makes a pie chart
+bar | makes a bar chart
+doughnut | makes a doughnut chart
 
+### countAuthors
+Option | Function
+--| --
+pie | makes a pie chart
