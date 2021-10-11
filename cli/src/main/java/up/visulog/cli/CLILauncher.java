@@ -7,19 +7,16 @@ import up.visulog.analyzer.CountAuthorsPlugin;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-
-import javax.swing.plaf.synth.SynthStyle;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
