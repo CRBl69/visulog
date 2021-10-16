@@ -12,6 +12,7 @@ import up.visulog.gitrawdata.Commit;
 import up.visulog.config.PluginConfig;
 
 
+@SuppressWarnings("unchecked")
 public class CountAuthorsPlugin implements AnalyzerPlugin {
     MyResult result; 
     Configuration configuration;
@@ -36,8 +37,6 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
     @Override
     public void run() {
         result = countAuthors(Commit.parseLogFromCommand(configuration.getGitPath()));
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -77,7 +76,6 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
         
         @Override
         public String getResultAsString() {
-            // TODO Auto-generated method stub
             return authorSet.toString();
         }
 
