@@ -17,3 +17,7 @@ tasks.test {
 tasks.jacocoTestReport {
     dependsOn(tasks.test) // tests are required to run before generating the report
 }
+
+jacoco {
+    toolVersion = "0.8.7"
+}
