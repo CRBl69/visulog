@@ -3,8 +3,6 @@ package up.visulog.config;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-// import com.esotericsoftware.yamlbeans.YamlWriter;
-
 
 // TODO: define what this type should be (probably a Map: settingKey -> settingValue
 public class PluginConfig {

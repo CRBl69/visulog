@@ -35,8 +35,6 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
     @Override
     public void run() {
         result = countAuthors(Commit.getAllCommits(configuration.getGitRepo()));
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -76,7 +74,6 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
 
         @Override
         public String getResultAsString() {
-            // TODO Auto-generated method stub
             return authorSet.toString();
         }
 
