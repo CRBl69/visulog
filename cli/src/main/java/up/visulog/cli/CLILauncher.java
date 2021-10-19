@@ -174,7 +174,14 @@ public class CLILauncher {
                     break;
             }
         }
-        return Optional.of(new Configuration(path, plugins, arguments.getPort(), arguments.getOutputFile(), arguments.isIndented()));
+        try {
+            return Optional.of(new Configuration(path, plugins, arguments.getPort(), arguments.getOutputFile(), arguments.isIndented()));
+        } catch (IOException e) {
+            System.out.println("Git repository not found");
+            e.printStackTrace();
+            System.exit(1);
+            return Optional.empty();
+        }
     }
 
     private static void displayHelpAndExit() {

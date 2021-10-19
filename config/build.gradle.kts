@@ -5,9 +5,9 @@ plugins {
 }
 
 dependencies {
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.4")
     testImplementation("junit:junit:4.+")
-
+    implementation("org.eclipse.jgit:org.eclipse.jgit:5.8.1.202007141445-r")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.4")
 }
 
 tasks.test {

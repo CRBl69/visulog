@@ -18,7 +18,6 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
     private PluginConfig options;
     public static final String name = "countAuthors";
 
-    
     public CountAuthorsPlugin(Configuration generalConfiguration) {
         this.options = generalConfiguration.getPluginConfigs().remove(CountAuthorsPlugin.name);
         this.configuration = generalConfiguration;
@@ -35,7 +34,7 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
 
     @Override
     public void run() {
-        result = countAuthors(Commit.parseLogFromCommand(configuration.getGitPath()));
+        result = countAuthors(Commit.getAllCommits(configuration.getGitRepo()));
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
         public MyResult() {
             authorSet = new HashSet<String>();
         }
-        
+
         @Override
         public String getResultAsString() {
             return authorSet.toString();

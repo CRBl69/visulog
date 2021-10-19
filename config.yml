@@ -1,4 +1,4 @@
-path: "."
+path: ".."
 plugins:
   - name: countCommits
     options:
