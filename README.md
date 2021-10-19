@@ -54,11 +54,13 @@ Visulog contains the following modules:
     ```
     source SCRIPT/envsetup
     ```
-    This will setup the GRADLE_OPTS environment variable so that gradle uses the SCRIPT proxy for downloading its dependencies. It will also use a custom trust store (the one installed in the system is apparently broken... ).
+
+This will setup the GRADLE_OPTS environment variable so that gradle uses the SCRIPT proxy for downloading its dependencies. It will also use a custom trust store (the one installed in the system is apparently broken... ).
 4. run gradle wrapper (it will download all dependencies, including gradle itself)
-    ```
-    ./gradlew build
-    ```
+```
+./gradlew build
+```
+
 ### Running the software
 
 Currently, it can be run through gradle too. In order to pass program arguments, you need to pass them behind `--args`:
@@ -75,17 +77,8 @@ For instance
 Will count the commits of each author in the current branch of the git repository present in the current folder (".").
 
 PLUGINS.md lists all the progam arguments and plugins you can use in visulog.
-### View countCommits and countAuthors in graphs
-The number of authors and the number of commits by authors can be displayed in a browser on localhost
 
-1. Run this command:
-```
-./gradlew run --args="-c ../config.yml --serve 8080"
-``` 
+## Documentation
 
-2. Go to you localhost, the port depends on the one you choosed in the command line
+The documentation can be found in the `docs` folder
 
-### Configuration files
-If you need to add or remove plugins, you can either modify "config.yml" or replace it with "--loadConfigFile" or "--justSaveConfigFile". To convert it to json use "--output" (more info in Plugins.md)
-
-example.yml explains how a configuration file is written.
