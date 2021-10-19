@@ -12,7 +12,6 @@ import up.visulog.gitrawdata.Commit;
 import up.visulog.config.PluginConfig;
 
 
-@SuppressWarnings("unchecked")
 public class CountAuthorsPlugin implements AnalyzerPlugin {
     MyResult result; 
     Configuration configuration;
@@ -71,7 +70,7 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
         }
 
         public MyResult() {
-            authorSet = new HashSet();
+            authorSet = new HashSet<String>();
         }
         
         @Override
