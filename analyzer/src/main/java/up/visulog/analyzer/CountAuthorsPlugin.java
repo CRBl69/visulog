@@ -36,8 +36,6 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
     @Override
     public void run() {
         result = countAuthors(Commit.parseLogFromCommand(configuration.getGitPath()));
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -72,12 +70,11 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
         }
 
         public MyResult() {
-            authorSet = new HashSet();
+            authorSet = new HashSet<String>();
         }
         
         @Override
         public String getResultAsString() {
-            // TODO Auto-generated method stub
             return authorSet.toString();
         }
 
