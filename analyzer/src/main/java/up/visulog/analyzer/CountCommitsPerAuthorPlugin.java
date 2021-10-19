@@ -40,7 +40,7 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
         return result;
     }
 
-    static class Result implements AnalyzerPlugin.Result {
+    static class Result implements AnalyzerPlugin.Result<String, Integer> {
         private PluginConfig options;
         private final Map<String, Integer> commitsPerAuthor = new HashMap<>();
 
@@ -70,8 +70,8 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
         }
 
         @Override
-        public Map<Object, Object>getData() {
-            return new HashMap<Object, Object>(commitsPerAuthor);
+        public Map<String, Integer>getData() {
+            return new HashMap<String, Integer>(commitsPerAuthor);
         }
     }
 }
