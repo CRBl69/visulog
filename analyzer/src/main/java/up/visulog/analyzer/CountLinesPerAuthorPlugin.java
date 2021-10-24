@@ -22,9 +22,9 @@ public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
 
     Result processLog(List<Commit> gitLog) {
         var result = new Result(this.options);
-        for (var line : gitLog) {
-            var nb = result.linePerAuthor.getOrDefault(line.author, 0);
-            result.linePerAuthor.put(line.author, nb+1);
+        for (var commit : gitLog) {
+            var nb = result.linePerAuthor.getOrDefault(commit.author, 0);
+            result.linePerAuthor.put(commit.author, nb+commit.linesAdded);
         }
         return result;
     }
