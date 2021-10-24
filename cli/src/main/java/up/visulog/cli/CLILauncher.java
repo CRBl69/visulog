@@ -11,6 +11,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Scanner;
+
+import javax.swing.plaf.synth.SynthStyle;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
@@ -109,10 +112,21 @@ public class CLILauncher {
 
         Path path = Paths.get(".");
 
-        if(!arguments.getConfigFile().equals("")) {
+        String configFile = arguments.getConfigFile();
+
+        File defaultConfig = new File("../.visulog.yml");
+        boolean isConfigVisulog = defaultConfig.isFile();
+
+        System.out.println(isConfigVisulog);
+
+        if(configFile.equals("") && isConfigVisulog) {
+            configFile = "../" + defaultConfig.getName();
+        }
+
+        if(!configFile.equals("")) {
             try {
                 ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-                File myObj = new File(arguments.getConfigFile());
+                File myObj = new File(configFile);
                 Scanner myReader = new Scanner(myObj);
                 String yamlFile = "";
                 while (myReader.hasNextLine()) {
