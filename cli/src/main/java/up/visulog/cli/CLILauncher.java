@@ -48,6 +48,11 @@ class Arguments {
     @Parameter(names = { "--port", "--serve" }, description = "Servir le contenu sur un port")
     private int port = -1;
 
+    @Parameter(names = {"--h", "--help"}, help = true, description = "Affice ce message")
+    private boolean help = false;
+
+
+
     public List<String> getPlugins() {
         if(this.plugins != null)
             return new ArrayList<String>(this.plugins);
@@ -73,6 +78,10 @@ class Arguments {
 
     public boolean isIndented() {
         return this.indentation;
+    }
+
+    public boolean isHelp() {
+        return this.help;
     }
 }
 
@@ -103,10 +112,14 @@ public class CLILauncher {
         var plugins = new HashMap<String, PluginConfig>();
         var arguments = new Arguments();
         Object yamlObject = new Object();
-        JCommander.newBuilder()
+        var jct = JCommander.newBuilder()
             .addObject(arguments)
-            .build()
-            .parse(args);
+            .build();
+        jct.parse(args);
+        if(arguments.isHelp()) {
+            jct.usage();
+            System.exit(0);
+        }
 
         Path path = Paths.get(".");
 
