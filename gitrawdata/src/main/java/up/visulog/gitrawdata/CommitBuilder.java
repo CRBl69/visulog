@@ -5,6 +5,8 @@ public class CommitBuilder {
     private String author;
     private String date;
     private String description;
+    private int linesAdded;
+    private int linesRemoved;
 
     public CommitBuilder(String id) {
         this.id = id;
@@ -25,7 +27,17 @@ public class CommitBuilder {
         return this;
     }
 
+    public CommitBuilder setLinesAdded(int lines){
+        this.linesAdded = lines;
+        return this;
+    }
+
+    public CommitBuilder setLinesRemoved(int lines){
+        this.linesRemoved = lines;
+        return this;
+    }
+
     public Commit createCommit() {
-        return new Commit(id, author, date, description);
+        return new Commit(id, author, date, description, linesAdded, linesRemoved);
     }
 }
