@@ -20,6 +20,7 @@ import java.util.Scanner;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -112,13 +113,17 @@ public class CLILauncher {
         var plugins = new HashMap<String, PluginConfig>();
         var arguments = new Arguments();
         Object yamlObject = new Object();
-        var jct = JCommander.newBuilder()
-            .addObject(arguments)
-            .build();
-        jct.parse(args);
-        if(arguments.isHelp()) {
-            jct.usage();
-            System.exit(0);
+        try {
+            var jct = JCommander.newBuilder()
+                .addObject(arguments)
+                .build();
+            jct.parse(args);
+            if(arguments.isHelp()) {
+                jct.usage();
+                System.exit(0);
+            }
+        } catch (ParameterException e){
+            displayHelpAndExit();
         }
 
         Path path = Paths.get(".");
