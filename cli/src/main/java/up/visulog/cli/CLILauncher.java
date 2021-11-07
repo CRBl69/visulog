@@ -107,8 +107,6 @@ public class CLILauncher {
         } else displayHelpAndExit();
     }
 
-//    ['.', '--addPlugin=countCommits', '--addPlugin=myPlugin']
-
     static Optional<Configuration> makeConfigFromCommandLineArgs(String[] args) {
         var plugins = new HashMap<String, PluginConfig>();
         var arguments = new Arguments();
@@ -218,8 +216,10 @@ public class CLILauncher {
     }
 
     private static void displayHelpAndExit() {
-        System.out.println("Wrong command...");
-        //TODO: print the list of options and their syntax
+        var jct = JCommander.newBuilder()
+            .addObject(new Arguments())
+            .build();
+        jct.usage();
         System.exit(0);
     }
 }
