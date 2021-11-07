@@ -42,6 +42,7 @@ public class Analyzer {
             case CountCommitsPerAuthorPlugin.name : return Optional.of(new CountCommitsPerAuthorPlugin(config));
             case CountAuthorsPlugin.name : return Optional.of(new CountAuthorsPlugin(config));
             case CountLinesPerAuthorPlugin.name : return Optional.of(new CountLinesPerAuthorPlugin(config));
+            case CountLinesRemovedPerAuthorPlugin.name : return Optional.of(new CountLinesRemovedPerAuthorPlugin(config));
             default : return Optional.empty();
         }
     }

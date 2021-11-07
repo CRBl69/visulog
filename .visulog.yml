@@ -1,6 +1,6 @@
 path: ".."
 plugins:
-  - name: countLines
+  - name: countLinesRemoved
     options:
       charts:
         - bar

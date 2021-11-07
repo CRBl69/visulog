@@ -3,6 +3,7 @@ package up.visulog.cli;
 import up.visulog.analyzer.Analyzer;
 import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
 import up.visulog.analyzer.CountLinesPerAuthorPlugin;
+import up.visulog.analyzer.CountLinesRemovedPerAuthorPlugin;
 import up.visulog.analyzer.CountAuthorsPlugin;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
@@ -131,8 +132,6 @@ public class CLILauncher {
         File defaultConfig = new File("../.visulog.yml");
         boolean isConfigVisulog = defaultConfig.isFile();
 
-        System.out.println(isConfigVisulog);
-
         if(configFile.equals("") && isConfigVisulog) {
             configFile = "../" + defaultConfig.getName();
         }
@@ -202,6 +201,9 @@ public class CLILauncher {
                     break;
                 case "countLines":
                     plugins.put(CountLinesPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countLinesRemoved":
+                    plugins.put(CountLinesRemovedPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
                     break;
             }
         }
