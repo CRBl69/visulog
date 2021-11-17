@@ -5,6 +5,7 @@ public class CommitBuilder {
     private String author;
     private String date;
     private String description;
+    private String mergedFrom;
     private int linesAdded;
     private int linesRemoved;
 
@@ -27,17 +28,21 @@ public class CommitBuilder {
         return this;
     }
 
+    public CommitBuilder setMergedFrom(String mergedFrom) {
+        this.mergedFrom = mergedFrom;
+        return this;
+    }
+    public CommitBuilder setLinesRemoved(int lines){
+        this.linesRemoved = lines;
+        return this;
+    }
     public CommitBuilder setLinesAdded(int lines){
         this.linesAdded = lines;
         return this;
     }
 
-    public CommitBuilder setLinesRemoved(int lines){
-        this.linesRemoved = lines;
-        return this;
-    }
-
+// Cette fonction créée un commit avec les valeurs de CommitBuilder
     public Commit createCommit() {
-        return new Commit(id, author, date, description, linesAdded, linesRemoved);
+        return new Commit(id, author, date, description, mergedFrom, linesAdded, linesRemoved);
     }
 }

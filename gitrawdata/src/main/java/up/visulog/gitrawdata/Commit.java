@@ -30,14 +30,16 @@ public class Commit {
     public final String date;
     public final String author;
     public final String description;
+    public final String mergedFrom;
     public final int linesAdded;
     public final int linesRemoved;
 
-    public Commit(String id, String author, String date, String description, int linesAdded, int linesRemoved) {
+    public Commit(String id, String author, String date, String description, String mergedFrom, int linesAdded, int linesRemoved) {
         this.id = id;
         this.author = author;
         this.date = date;
         this.description = description;
+        this.mergedFrom = mergedFrom;
         this.linesAdded = linesAdded;
         this.linesRemoved = linesRemoved;
     }
@@ -139,5 +141,8 @@ public class Commit {
             System.exit(1);
             return null;
         }
+    }
+    public boolean isMergeCommit() {
+        return mergedFrom != null;
     }
 }
