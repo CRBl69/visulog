@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
+public class CountLinesPerAuthorPlugin implements AnalyzerPlugin<String, Integer> {
     public static final String name = "countLines";
     private final Configuration configuration;
     private Result result;

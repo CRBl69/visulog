@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import up.visulog.config.PluginConfig;
 
-public interface AnalyzerPlugin {
+public interface AnalyzerPlugin<T1, T2> {
     interface Result<T1,T2> {
 
         @JsonIgnore
@@ -57,5 +57,5 @@ public interface AnalyzerPlugin {
     /**
      * @return the result of this analysis. Runs the analysis first if not already done.
      */
-    Result getResult();
+    Result<T1, T2> getResult();
 }
