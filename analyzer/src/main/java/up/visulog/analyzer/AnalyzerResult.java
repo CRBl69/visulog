@@ -10,13 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class AnalyzerResult {
-    public List<AnalyzerPlugin.Result> getSubResults() {
+    public List<AnalyzerPlugin.Result<Object, Object>> getSubResults() {
         return subResults;
     }
 
-    private final List<AnalyzerPlugin.Result> subResults;
+    private final List<AnalyzerPlugin.Result<Object, Object>> subResults;
 
-    public AnalyzerResult(List<AnalyzerPlugin.Result> subResults) {
+    public AnalyzerResult(List<AnalyzerPlugin.Result<Object, Object>> subResults) {
         this.subResults = subResults;
     }
 
