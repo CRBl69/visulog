@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin {
+public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin<String, Integer> {
     public static final String name = "countCommits";
     private final Configuration configuration;
     private Result result;
