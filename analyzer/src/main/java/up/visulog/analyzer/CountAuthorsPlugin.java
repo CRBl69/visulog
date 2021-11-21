@@ -12,7 +12,7 @@ import up.visulog.gitrawdata.Commit;
 import up.visulog.config.PluginConfig;
 
 
-public class CountAuthorsPlugin implements AnalyzerPlugin {
+public class CountAuthorsPlugin implements AnalyzerPlugin<String, Integer> {
     MyResult result; 
     Configuration configuration;
     private PluginConfig options;
@@ -38,12 +38,12 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
     }
 
     @Override
-    public Result getResult() {
+    public MyResult getResult() {
         if (result == null) run();
         return result;
     }
 
-    static class MyResult implements AnalyzerPlugin.Result {
+    static class MyResult implements AnalyzerPlugin.Result<String, Integer> {
         HashSet<String> authorSet;
         private PluginConfig options;
 
@@ -78,8 +78,8 @@ public class CountAuthorsPlugin implements AnalyzerPlugin {
         }
 
         @Override
-        public Map<Object, Object> getData() {
-            var map = new HashMap<Object, Object>();
+        public Map<String, Integer> getData() {
+            var map = new HashMap<String, Integer>();
             map.put("totalAuthors", this.authorSet.size());
             return map;
         }

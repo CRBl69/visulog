@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import up.visulog.config.PluginConfig;
 
-public interface AnalyzerPlugin {
-    interface Result {
+public interface AnalyzerPlugin<T1, T2> {
+    interface Result<T1,T2> {
 
         @JsonIgnore
         String getResultAsString();
@@ -20,7 +20,7 @@ public interface AnalyzerPlugin {
          * @return an object that represents the data of the plugin
          */
         @JsonProperty("data")
-        Map<Object, Object> getData();
+        Map<T1, T2> getData();
 
         /**
          * This is useful in order to know by which plugin the
@@ -57,5 +57,5 @@ public interface AnalyzerPlugin {
     /**
      * @return the result of this analysis. Runs the analysis first if not already done.
      */
-    Result getResult();
+    Result<T1, T2> getResult();
 }

@@ -4,6 +4,7 @@ import up.visulog.analyzer.Analyzer;
 import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
 import up.visulog.analyzer.CountLinesPerAuthorPlugin;
 import up.visulog.analyzer.CountLinesRemovedPerAuthorPlugin;
+import up.visulog.analyzer.CountMergeCommitsPerAuthor;
 import up.visulog.analyzer.CountAuthorsPlugin;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
@@ -204,6 +205,9 @@ public class CLILauncher {
                     break;
                 case "countLinesRemoved":
                     plugins.put(CountLinesRemovedPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countMergeCommitsPerAuthor":
+                    plugins.put(CountMergeCommitsPerAuthor.name, new PluginConfig().addChart("bars"));
                     break;
             }
         }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
+public class CountLinesPerAuthorPlugin implements AnalyzerPlugin<String, Integer> {
     public static final String name = "countLines";
     private final Configuration configuration;
     private Result result;
@@ -40,7 +40,7 @@ public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
         return result;
     }
 
-    static class Result implements AnalyzerPlugin.Result {
+    static class Result implements AnalyzerPlugin.Result<String, Integer> {
         private PluginConfig options;
         private final Map<String, Integer> linePerAuthor = new HashMap<String, Integer>();
 
@@ -70,8 +70,8 @@ public class CountLinesPerAuthorPlugin implements AnalyzerPlugin {
         }
 
         @Override
-        public Map<Object, Object>getData() {
-            return new HashMap<Object, Object>(linePerAuthor);
+        public Map<String, Integer>getData() {
+            return new HashMap<String, Integer>(linePerAuthor);
         }
     }
 }
