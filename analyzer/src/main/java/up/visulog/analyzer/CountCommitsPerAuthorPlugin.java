@@ -3,7 +3,9 @@ package up.visulog.analyzer;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
+import up.visulog.gitrawdata.Filter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,14 @@ public class CountCommitsPerAuthorPlugin implements AnalyzerPlugin<String, Integ
 
     @Override
     public void run() {
-        result = processLog(Commit.getAllCommits(configuration.getGitRepo()));
+        List<Filter> filters = new ArrayList<Filter>();
+        for (var options : this.options.getValueOptions().entrySet()){
+            try {
+                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
     @Override

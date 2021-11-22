@@ -51,16 +51,6 @@ public class Commit {
                 ", description='" + description + '\'' +
                 '}';
     }
-
-    /**
-     * Transforms a time encoded as long into a string with
-     * the git log format.
-     */
-    static LocalDateTime toDate(long time, TimeZone tz) {
-        var instant = Instant.ofEpochSecond(time);
-        return LocalDateTime.ofInstant(instant, tz.toZoneId());
-    }
-
     /**
      * Transform a JGit revCommit into a regular Commit object.
      * @throws IOException
@@ -71,8 +61,10 @@ public class Commit {
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
         var email = author.getEmailAddress();
-        var time = author.getWhen().getTime();
-        var timeZone = author.getTimeZone();
+
+        // get LocalDateTime of commit
+        var instant = Instant.ofEpochSecond(rCommit.getCommitTime());
+        var date = LocalDateTime.ofInstant(instant, TimeZone.getDefault().toZoneId());
 
         // Getting the number of added/deleted lines
         // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
@@ -98,7 +90,7 @@ public class Commit {
         var commit =
             new Commit(id.getName(),
                 name + " <" + email+">",
-                toDate(time, timeZone),
+                date,
                 rCommit.getFullMessage(),
                 linesAdded,
                 linesDeleted);
@@ -121,16 +113,20 @@ public class Commit {
         }
     }
 
-    public static List<Commit> getFilteredCommits(Repository repo, Filter[] filters){
+    public static List<Commit> getFilteredCommits(Repository repo, List<Filter> filters){
         List<Commit> res = getAllCommits(repo);
-        for (int i=0; i<filters.length; i++){
+        for (int i=0; i<filters.size(); i++){
+            System.out.println(filters.get(i).getClass().getName());
             for (int j=0; j<res.size(); j++){
-                if (!filters[i].filter(res.get(j))) res.remove(j);
+                if (!filters.get(i).filter(res.get(j))) {
+                    res.remove(j);
+                    j--;
+                }
             }
         }
         return res;
     }
-    
+
     public static List<Commit> getAllCommits(Repository repo) {
         try {
             List<Commit> commits = new ArrayList<Commit>();

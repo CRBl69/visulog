@@ -1,6 +1,6 @@
 path: ".."
 plugins:
-  - name: countLinesRemoved
+  - name: countCommits
     options:
       charts:
         - bar
@@ -9,6 +9,8 @@ plugins:
       valueOptions:
         displayName: Compter les lignes par personne
         width: 600
+        date: 2021-10-12~2021-11-12
+        author: ".*Claire.*"
       toggleOptions:
         - nocolor
         - cute
