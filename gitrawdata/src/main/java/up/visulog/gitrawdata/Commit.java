@@ -1,9 +1,9 @@
 package up.visulog.gitrawdata;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import java.io.IOException;
@@ -27,13 +27,13 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 public class Commit {
     // AD: FIXME: (some of) these fields could have more specialized types than String
     public final String id;
-    public final String date;
+    public final LocalDateTime date;
     public final String author;
     public final String description;
     public final int linesAdded;
     public final int linesRemoved;
 
-    public Commit(String id, String author, String date, String description, int linesAdded, int linesRemoved) {
+    public Commit(String id, String author, LocalDateTime date, String description, int linesAdded, int linesRemoved) {
         this.id = id;
         this.author = author;
         this.date = date;
@@ -51,19 +51,6 @@ public class Commit {
                 ", description='" + description + '\'' +
                 '}';
     }
-
-    /**
-     * Transforms a time encoded as long into a string with
-     * the git log format.
-     */
-    static String stringOfTime(long time, TimeZone tz) {
-        var dtfmt =
-            new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z", Locale.US);
-        dtfmt.setTimeZone(tz);
-        dtfmt.format(Long.valueOf(time));
-        return dtfmt.format(Long.valueOf(time));
-    }
-
     /**
      * Transform a JGit revCommit into a regular Commit object.
      * @throws IOException
@@ -74,8 +61,10 @@ public class Commit {
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
         var email = author.getEmailAddress();
-        var time = author.getWhen().getTime();
-        var timeZone = author.getTimeZone();
+
+        // get LocalDateTime of commit
+        var instant = Instant.ofEpochSecond(rCommit.getCommitTime());
+        var date = LocalDateTime.ofInstant(instant, TimeZone.getDefault().toZoneId());
 
         // Getting the number of added/deleted lines
         // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
@@ -101,7 +90,7 @@ public class Commit {
         var commit =
             new Commit(id.getName(),
                 name + " <" + email+">",
-                stringOfTime(time, timeZone),
+                date,
                 rCommit.getFullMessage(),
                 linesAdded,
                 linesDeleted);
@@ -123,7 +112,21 @@ public class Commit {
             return commitOfRevCommit(id, rCommit, repo);
         }
     }
-    
+
+    public static List<Commit> getFilteredCommits(Repository repo, List<Filter> filters){
+        List<Commit> res = getAllCommits(repo);
+        for (int i=0; i<filters.size(); i++){
+            System.out.println(filters.get(i).getClass().getName());
+            for (int j=0; j<res.size(); j++){
+                if (!filters.get(i).filter(res.get(j))) {
+                    res.remove(j);
+                    j--;
+                }
+            }
+        }
+        return res;
+    }
+
     public static List<Commit> getAllCommits(Repository repo) {
         try {
             List<Commit> commits = new ArrayList<Commit>();
