@@ -1,9 +1,11 @@
 package up.visulog.gitrawdata;
 
+import java.time.LocalDateTime;
+
 public class CommitBuilder {
     private final String id;
     private String author;
-    private String date;
+    private LocalDateTime date;
     private String description;
     private String mergedFrom;
     private int linesAdded;
@@ -18,7 +20,7 @@ public class CommitBuilder {
         return this;
     }
 
-    public CommitBuilder setDate(String date) {
+    public CommitBuilder setDate(LocalDateTime date) {
         this.date = date;
         return this;
     }

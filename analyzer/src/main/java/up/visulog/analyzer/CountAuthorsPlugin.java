@@ -3,12 +3,14 @@ package up.visulog.analyzer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
 import up.visulog.config.Configuration;
 import up.visulog.gitrawdata.Commit;
+import up.visulog.gitrawdata.Filter;
 import up.visulog.config.PluginConfig;
 
 
@@ -34,7 +36,14 @@ public class CountAuthorsPlugin implements AnalyzerPlugin<String, Integer> {
 
     @Override
     public void run() {
-        result = countAuthors(Commit.getAllCommits(configuration.getGitRepo()));
+        List<Filter> filters = new ArrayList<Filter>();
+        for (var options : this.options.getValueOptions().entrySet()){
+            try {
+                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        result = countAuthors(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
     @Override
