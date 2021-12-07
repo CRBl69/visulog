@@ -4,8 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
-
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import org.eclipse.jgit.lib.Repository;
@@ -72,6 +73,7 @@ public class Commit {
      * @throws IncorrectObjectTypeException
      * @throws MissingObjectException
      */
+
     public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit, Repository repo) throws MissingObjectException, IncorrectObjectTypeException, IOException{
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
@@ -83,6 +85,7 @@ public class Commit {
         // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
         int linesDeleted = 0;
         int linesAdded = 0;
+        String mergedFrom = "";
         RevWalk rw = new RevWalk(repo);
         RevCommit parent = rCommit.getParentCount() == 0 ? null :  rw.parseCommit(rCommit.getParent(0).getId());
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
@@ -99,11 +102,13 @@ public class Commit {
         }
         rw.close();
         df.close();
+        mergedFrom = author.getName();
 
         var commit =
             new Commit(id.getName(),
                 name + " <" + email+">",
                 stringOfTime(time, timeZone),
+                mergedFrom, 
                 rCommit.getFullMessage(),
                 linesAdded,
                 linesDeleted);

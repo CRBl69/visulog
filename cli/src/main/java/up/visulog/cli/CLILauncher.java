@@ -209,6 +209,7 @@ public class CLILauncher {
                 case "countMergeCommitsPerAuthor":
                     plugins.put(CountMergeCommitsPerAuthor.name, new PluginConfig().addChart("bars"));
                     break;
+                    
             }
         }
         try {

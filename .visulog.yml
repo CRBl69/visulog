@@ -1,13 +1,13 @@
 path: ".."
 plugins:
-  - name: countLinesRemoved
+  - name: countMergeCommitsPerAuthor
     options:
       charts:
         - bar
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les lignes par personne
+        displayName: Compter les MergeCommits par personne
         width: 600
       toggleOptions:
         - nocolor
