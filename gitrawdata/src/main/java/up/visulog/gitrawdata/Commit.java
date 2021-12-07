@@ -3,14 +3,18 @@ package up.visulog.gitrawdata;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
@@ -35,8 +39,9 @@ public class Commit {
     public final boolean mergeCommit;
     public final int linesAdded;
     public final int linesRemoved;
+    public final HashMap<String, Integer> files;
 
-    public Commit(String id, String author, LocalDateTime date, String description, boolean mergeCommit, int linesAdded, int linesRemoved) {
+    public Commit(String id, String author, LocalDateTime date, String description, boolean mergeCommit, int linesAdded, int linesRemoved, HashMap<String, Integer> files) {
         this.id = id;
         this.author = author;
         this.date = date;
@@ -44,6 +49,7 @@ public class Commit {
         this.mergeCommit = mergeCommit;
         this.linesAdded = linesAdded;
         this.linesRemoved = linesRemoved;
+        this.files = files;
     }
 
     @Override
@@ -75,6 +81,7 @@ public class Commit {
         // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
         int linesDeleted = 0;
         int linesAdded = 0;
+        HashMap<String, Integer> files = new HashMap<>();
         RevWalk rw = new RevWalk(repo);
         RevCommit parent = rCommit.getParentCount() == 0 ? null :  rw.parseCommit(rCommit.getParent(0).getId());
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
@@ -84,10 +91,14 @@ public class Commit {
         List<DiffEntry> diffs;
         diffs = df.scan(parent == null ? null : parent.getTree(), rCommit.getTree());
         for (DiffEntry diff : diffs) {
+            String newpath = diff.getNewPath();
+            Path path = Paths.get(newpath);
+            String filename = path.getFileName().toString();
             for (Edit edit : df.toFileHeader(diff).toEditList()) {
                 linesDeleted += edit.getEndA() - edit.getBeginA();
                 linesAdded += edit.getEndB() - edit.getBeginB();
             }
+            files.put(filename, linesAdded+linesDeleted);
         }
         rw.close();
         df.close();
@@ -100,7 +111,8 @@ public class Commit {
                 rCommit.getFullMessage(),
                 mergeCommit,
                 linesAdded,
-                linesDeleted);
+                linesDeleted,
+                files);
         return commit;
     }
 
