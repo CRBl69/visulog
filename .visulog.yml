@@ -18,11 +18,15 @@ plugins:
       valueOptions:
         displayName: Compter les lignes ajoutées par personne
         author: .*Claire.*
-  - name: countCommits
+  - name: countFilesChanged
     options:
       charts:
         - bar
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les commits par personne
+        displayName: Afficher les fichiers les plus changés
+        width: 600
+      toggleOptions:
+        - nocolor
+        - cute

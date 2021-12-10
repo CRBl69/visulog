@@ -46,6 +46,7 @@ public class Analyzer {
             case CountMergeCommitsPerAuthor.name : return Optional.of(new CountMergeCommitsPerAuthor(config));
             case CountContributionPercentagePlugin.name : return Optional.of(new CountContributionPercentagePlugin(config));
             case CountLinesOverTimePlugin.name : return Optional.of(new CountLinesOverTimePlugin(config));
+            case CountFilesChanged.name : return Optional.of(new CountFilesChanged(config));
             default : return Optional.empty();
         }
     }
