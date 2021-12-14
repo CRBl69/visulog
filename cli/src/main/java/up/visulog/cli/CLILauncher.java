@@ -210,7 +210,7 @@ public class CLILauncher {
                 case "countMergeCommits":
                     plugins.put(CountMergeCommitsPerAuthor.name, new PluginConfig().addChart("bars"));
                     break;
-                case "CountContributionPercentage":
+                case "countContributionPercentage":
                     plugins.put(CountContributionPercentagePlugin.name, new PluginConfig().addChart("bars"));
                     break;
             }

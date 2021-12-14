@@ -12,25 +12,26 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CountContributionPercentagePlugin implements AnalyzerPlugin<String, Double> {
-    public static final String name = "CountContributionPercentage";
+    public static final String name = "countContributionPercentage";
     private final Configuration configuration;
     private Result result;
     private PluginConfig options;
-    private CountCommitsPerAuthorPlugin cpt;
 
     public CountContributionPercentagePlugin(Configuration generalConfiguration) {
         this.configuration = generalConfiguration;
         this.options = generalConfiguration.getPluginConfigs().remove(CountContributionPercentagePlugin.name);
-        this.cpt = new CountCommitsPerAuthorPlugin(generalConfiguration);
     }
 
     Result processLog(List<Commit> gitLog) {
-        Double Somme=0.0;
         var result = new Result(this.options);
-        var resultP =  cpt.processLog(gitLog);
-        for (var nb : resultP.getData().values()) Somme=Somme+nb;
-        for (var item : resultP.getData().entrySet()) {
-            result.percentagePerAuthor.put(item.getKey(), (Double.valueOf(item.getKey())*100/Somme));
+        var totalCommits = gitLog.size();
+        for (var commit : gitLog) {
+            var commits = result.percentagePerAuthor.getOrDefault(commit.author, 0.0);
+            result.percentagePerAuthor.put(commit.author, commits + 1);
+        }
+        for(var author : result.percentagePerAuthor.keySet()) {
+            var commits = result.percentagePerAuthor.get(author);
+            result.percentagePerAuthor.put(author, commits / totalCommits * 100);
         }
         return result;
     }
