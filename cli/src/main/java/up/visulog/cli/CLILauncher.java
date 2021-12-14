@@ -206,7 +206,7 @@ public class CLILauncher {
                 case "countLinesRemoved":
                     plugins.put(CountLinesRemovedPerAuthorPlugin.name, new PluginConfig().addChart("bars"));
                     break;
-                case "countMergeCommitsPerAuthor":
+                case "countMergeCommits":
                     plugins.put(CountMergeCommitsPerAuthor.name, new PluginConfig().addChart("bars"));
                     break;
                     

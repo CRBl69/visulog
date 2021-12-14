@@ -1,6 +1,6 @@
 path: ".."
 plugins:
-  - name: countCommits
+  - name: countMergeCommits
     options:
       charts:
         - bar
@@ -9,8 +9,12 @@ plugins:
       valueOptions:
         displayName: Compter les MergeCommits par personne
         width: 600
-        date: 2021-10-12~2021-11-12
-        author: ".*Claire.*"
-      toggleOptions:
-        - nocolor
-        - cute
+  - name: countLines
+    options:
+      charts:
+        - bar
+        - doughnut
+        - line
+      valueOptions:
+        displayName: Compter les MergeCommits par personne
+        width: 600

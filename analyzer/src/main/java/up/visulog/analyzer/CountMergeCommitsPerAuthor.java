@@ -3,13 +3,15 @@ package up.visulog.analyzer;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
+import up.visulog.gitrawdata.Filter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountMergeCommitsPerAuthor implements AnalyzerPlugin {
+public class CountMergeCommitsPerAuthor implements AnalyzerPlugin<String, Integer> {
     public static final String name = "countMergeCommits";
     private final Configuration configuration;
     private Result result;
@@ -23,8 +25,8 @@ public class CountMergeCommitsPerAuthor implements AnalyzerPlugin {
     Result processLog(List<Commit> gitLog) {
         var result = new Result(this.options);
         for (var commit : gitLog) {
-            if (commit.isMergeCommit()) {
-            	var nb = result.commitsPerAuthor.getOrDefault(commit.author, 0); //
+            if (commit.mergeCommit) {
+            	var nb = result.commitsPerAuthor.getOrDefault(commit.author, 0);
             	result.commitsPerAuthor.put(commit.author, nb + 1); 
             }
         }
@@ -33,7 +35,14 @@ public class CountMergeCommitsPerAuthor implements AnalyzerPlugin {
 
     @Override
     public void run() {
-        result = processLog(Commit.getAllCommits(configuration.getGitRepo()));
+        List<Filter> filters = new ArrayList<Filter>();
+        for (var options : this.options.getValueOptions().entrySet()){
+            try {
+                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
     @Override
@@ -42,12 +51,9 @@ public class CountMergeCommitsPerAuthor implements AnalyzerPlugin {
         return result;
     }
 
-    static class Result implements AnalyzerPlugin.Result {
+    static class Result implements AnalyzerPlugin.Result<String, Integer> {
         private PluginConfig options;
         private final Map<String, Integer> commitsPerAuthor = new HashMap<>(); 
-        public Map<String, Integer> getCommitsPerAuthor() {
-            return commitsPerAuthor;
-        }
 
         Result(PluginConfig options) {
             this.options = options;
@@ -55,7 +61,7 @@ public class CountMergeCommitsPerAuthor implements AnalyzerPlugin {
 
         @Override
         public String getPluginName() {
-            return CountLinesPerAuthorPlugin.name;
+            return CountMergeCommitsPerAuthor.name;
         }
 
         @Override
@@ -75,8 +81,8 @@ public class CountMergeCommitsPerAuthor implements AnalyzerPlugin {
         }
 
         @Override
-        public Map<Object, Object>getData() {
-            return new HashMap<Object, Object>(commitsPerAuthor);
+        public Map<String, Integer>getData() {
+            return new HashMap<>(commitsPerAuthor);
         }
     }
 }

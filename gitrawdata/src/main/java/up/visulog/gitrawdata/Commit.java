@@ -32,16 +32,16 @@ public class Commit {
     public final LocalDateTime date;
     public final String author;
     public final String description;
-    public final String mergedFrom;
+    public final boolean mergeCommit;
     public final int linesAdded;
     public final int linesRemoved;
 
-    public Commit(String id, String author, LocalDateTime date, String description, String mergedFrom, int linesAdded, int linesRemoved) {
+    public Commit(String id, String author, LocalDateTime date, String description, boolean mergeCommit, int linesAdded, int linesRemoved) {
         this.id = id;
         this.author = author;
         this.date = date;
         this.description = description;
-        this.mergedFrom = mergedFrom;
+        this.mergeCommit = mergeCommit;
         this.linesAdded = linesAdded;
         this.linesRemoved = linesRemoved;
     }
@@ -75,7 +75,6 @@ public class Commit {
         // https://stackoverflow.com/questions/19467305/using-the-jgit-how-can-i-retrieve-the-line-numbers-of-added-deleted-lines
         int linesDeleted = 0;
         int linesAdded = 0;
-        String mergedFrom = "";
         RevWalk rw = new RevWalk(repo);
         RevCommit parent = rCommit.getParentCount() == 0 ? null :  rw.parseCommit(rCommit.getParent(0).getId());
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
@@ -92,14 +91,14 @@ public class Commit {
         }
         rw.close();
         df.close();
-        mergedFrom = author.getName();
+        boolean mergeCommit = rCommit.getParentCount() > 1 ? true : false;
 
         var commit =
             new Commit(id.getName(),
                 name + " <" + email+">",
                 date, 
-                mergedFrom,
                 rCommit.getFullMessage(),
+                mergeCommit,
                 linesAdded,
                 linesDeleted);
         return commit;
@@ -150,8 +149,5 @@ public class Commit {
             System.exit(1);
             return null;
         }
-    }
-    public boolean isMergeCommit() {
-        return mergedFrom != null;
     }
 }
