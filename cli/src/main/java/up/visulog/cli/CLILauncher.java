@@ -2,6 +2,7 @@ package up.visulog.cli;
 
 import up.visulog.analyzer.Analyzer;
 import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
+import up.visulog.analyzer.CountContributionPercentagePlugin;
 import up.visulog.analyzer.CountLinesPerAuthorPlugin;
 import up.visulog.analyzer.CountLinesRemovedPerAuthorPlugin;
 import up.visulog.analyzer.CountMergeCommitsPerAuthor;
@@ -209,7 +210,9 @@ public class CLILauncher {
                 case "countMergeCommits":
                     plugins.put(CountMergeCommitsPerAuthor.name, new PluginConfig().addChart("bars"));
                     break;
-                    
+                case "countContributionPercentage":
+                    plugins.put(CountContributionPercentagePlugin.name, new PluginConfig().addChart("bars"));
+                    break;
             }
         }
         try {
