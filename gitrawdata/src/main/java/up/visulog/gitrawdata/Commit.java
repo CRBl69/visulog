@@ -4,8 +4,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
-
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import org.eclipse.jgit.lib.Repository;
@@ -30,14 +32,16 @@ public class Commit {
     public final LocalDateTime date;
     public final String author;
     public final String description;
+    public final boolean mergeCommit;
     public final int linesAdded;
     public final int linesRemoved;
 
-    public Commit(String id, String author, LocalDateTime date, String description, int linesAdded, int linesRemoved) {
+    public Commit(String id, String author, LocalDateTime date, String description, boolean mergeCommit, int linesAdded, int linesRemoved) {
         this.id = id;
         this.author = author;
         this.date = date;
         this.description = description;
+        this.mergeCommit = mergeCommit;
         this.linesAdded = linesAdded;
         this.linesRemoved = linesRemoved;
     }
@@ -57,6 +61,7 @@ public class Commit {
      * @throws IncorrectObjectTypeException
      * @throws MissingObjectException
      */
+
     public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit, Repository repo) throws MissingObjectException, IncorrectObjectTypeException, IOException{
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
@@ -86,12 +91,14 @@ public class Commit {
         }
         rw.close();
         df.close();
+        boolean mergeCommit = rCommit.getParentCount() > 1 ? true : false;
 
         var commit =
             new Commit(id.getName(),
                 name + " <" + email+">",
-                date,
+                date, 
                 rCommit.getFullMessage(),
+                mergeCommit,
                 linesAdded,
                 linesDeleted);
         return commit;
