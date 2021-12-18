@@ -9,7 +9,7 @@ plugins:
       valueOptions:
         displayName: Compter les merge commits par personne
         date: 2021-11-01~2021-12-01
-  - name: countLines
+  - name: countLinesOverTime
     options:
       charts:
         - bar
