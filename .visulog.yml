@@ -7,8 +7,8 @@ plugins:
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les MergeCommits par personne
-        width: 600
+        displayName: Compter les merge commits par personne
+        date: 2021-11-01~2021-12-01
   - name: countLines
     options:
       charts:
@@ -16,5 +16,13 @@ plugins:
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les MergeCommits par personne
-        width: 600
+        displayName: Compter les lignes ajoutées par personne
+        author: .*Claire.*
+  - name: countCommits
+    options:
+      charts:
+        - bar
+        - doughnut
+        - line
+      valueOptions:
+        displayName: Compter les commits par personne

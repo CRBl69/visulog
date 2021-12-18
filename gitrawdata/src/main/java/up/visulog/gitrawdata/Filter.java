@@ -1,5 +1,8 @@
 package up.visulog.gitrawdata;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public abstract class Filter {
     public abstract boolean filter(Commit commit);
 
@@ -15,5 +18,16 @@ public abstract class Filter {
         } else {
             throw new IllegalArgumentException("Invalid filter type: " + filterType);
         }
+    }
+
+    public static ArrayList<Filter> getFilters(Map<String, String> filtersSet){
+        ArrayList<Filter> filters = new ArrayList<Filter>();
+        for (var options : filtersSet.entrySet()){
+            try {
+                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        return filters;
     }
 }

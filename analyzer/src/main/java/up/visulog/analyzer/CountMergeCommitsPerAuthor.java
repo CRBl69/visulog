@@ -35,13 +35,7 @@ public class CountMergeCommitsPerAuthor implements AnalyzerPlugin<String, Intege
 
     @Override
     public void run() {
-        List<Filter> filters = new ArrayList<Filter>();
-        for (var options : this.options.getValueOptions().entrySet()){
-            try {
-                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
-            } catch (IllegalArgumentException e) {
-            }
-        }
+        List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 

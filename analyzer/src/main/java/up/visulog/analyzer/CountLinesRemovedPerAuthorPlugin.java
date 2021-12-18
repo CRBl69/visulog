@@ -3,6 +3,7 @@ package up.visulog.analyzer;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
+import up.visulog.gitrawdata.Filter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,8 @@ public class CountLinesRemovedPerAuthorPlugin implements AnalyzerPlugin<String, 
 
     @Override
     public void run() {
-        result = processLog(Commit.getAllCommits(configuration.getGitRepo()));
+        List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
+        result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
     @Override
