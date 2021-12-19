@@ -45,6 +45,7 @@ public class Analyzer {
             case CountLinesRemovedPerAuthorPlugin.name : return Optional.of(new CountLinesRemovedPerAuthorPlugin(config));
             case CountMergeCommitsPerAuthor.name : return Optional.of(new CountMergeCommitsPerAuthor(config));
             case CountContributionPercentagePlugin.name : return Optional.of(new CountContributionPercentagePlugin(config));
+            case CountLinesOverTimePlugin.name : return Optional.of(new CountLinesOverTimePlugin(config));
             default : return Optional.empty();
         }
     }
