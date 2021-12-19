@@ -1,4 +1,4 @@
-path: ".."
+path: "."
 plugins:
   - name: countMergeCommits
     options:
@@ -16,7 +16,7 @@ plugins:
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les lignes ajoutées par personne
+        displayName: Compter les lignes ajoutées par jour
         author: .*Claire.*
   - name: countFilesChanged
     options:
@@ -25,8 +25,5 @@ plugins:
         - doughnut
         - line
       valueOptions:
-        displayName: Afficher les fichiers les plus changés
+        displayName: Compter les commits par personne
         width: 600
-      toggleOptions:
-        - nocolor
-        - cute

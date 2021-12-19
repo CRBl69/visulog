@@ -133,11 +133,11 @@ public class CLILauncher {
 
         String configFile = arguments.getConfigFile();
 
-        File defaultConfig = new File("../.visulog.yml");
+        File defaultConfig = new File("./.visulog.yml");
         boolean isConfigVisulog = defaultConfig.isFile();
 
         if(configFile.equals("") && isConfigVisulog) {
-            configFile = "../" + defaultConfig.getName();
+            configFile = "./" + defaultConfig.getName();
         }
 
         if(!configFile.equals("")) {

@@ -17,7 +17,7 @@ public class Analyzer {
     }
 
     public AnalyzerResult computeResults() {
-        List<AnalyzerPlugin> plugins = new ArrayList<>();
+        List<AnalyzerPlugin<?>> plugins = new ArrayList<>();
 
         var pluginsConfig = new ConcurrentHashMap<String, PluginConfig>(config.getPluginConfigs());
 
@@ -28,16 +28,25 @@ public class Analyzer {
             plugin.ifPresent(plugins::add);
         });
 
+        var threadList = new ArrayList<Thread>();
+
         // run all the plugins
-        // TODO: try running them in parallel
-        for (var plugin: plugins) plugin.run();
+        for (var plugin: plugins) {
+            Thread thread = new Thread(plugin);
+            thread.start();
+            threadList.add(thread);
+        }
+
+        while(true) {
+            threadList.removeIf(t -> !t.isAlive());
+            if (threadList.isEmpty()) break;
+        }
 
         // store the results together in an AnalyzerResult instance and return it
         return new AnalyzerResult(plugins.stream().map(AnalyzerPlugin::getResult).collect(Collectors.toList()));
     }
 
-    // TODO: find a way so that the list of plugins is not hardcoded in this factory
-    private Optional<AnalyzerPlugin> makePlugin(String pluginName, PluginConfig pluginConfig) {
+    private Optional<AnalyzerPlugin<?>> makePlugin(String pluginName, PluginConfig pluginConfig) {
         switch (pluginName) {
             case CountCommitsPerAuthorPlugin.name : return Optional.of(new CountCommitsPerAuthorPlugin(config));
             case CountAuthorsPlugin.name : return Optional.of(new CountAuthorsPlugin(config));

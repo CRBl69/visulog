@@ -11,15 +11,12 @@ import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
 import up.visulog.gitrawdata.Filter;
 
-public class CountFilesChanged implements AnalyzerPlugin<String, Integer>{
+public class CountFilesChanged extends AnalyzerPlugin<Map<String, Integer>>{
     public static final String name = "countFilesChanged";
-    private final Configuration configuration;
     private Result result;
-    private PluginConfig options;
     
     public CountFilesChanged(Configuration config){
-        this.configuration = config;
-        this.options = config.getPluginConfigs().remove(CountFilesChanged.name);
+        super(config, name);
     }
 
     Result processLog(List<Commit> gitLog) {
@@ -38,13 +35,7 @@ public class CountFilesChanged implements AnalyzerPlugin<String, Integer>{
 
     @Override
     public void run() {
-        List<Filter> filters = new ArrayList<Filter>();
-        for (var options : this.options.getValueOptions().entrySet()){
-            try {
-                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
-            } catch (IllegalArgumentException e) {
-            }
-        }
+        List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
@@ -54,7 +45,7 @@ public class CountFilesChanged implements AnalyzerPlugin<String, Integer>{
         return result;
     }
     
-    static class Result implements AnalyzerPlugin.Result<String, Integer> {
+    static class Result implements AnalyzerPlugin.Result<Map<String, Integer>> {
         private PluginConfig options;
         private HashMap<String, Integer> files;
 

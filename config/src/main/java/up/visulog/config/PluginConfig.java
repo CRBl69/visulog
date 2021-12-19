@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-// TODO: define what this type should be (probably a Map: settingKey -> settingValue
 public class PluginConfig {
     private ArrayList<String> charts;
     private ArrayList<String> toggledOptions;

@@ -10,15 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountLinesPerAuthorPlugin implements AnalyzerPlugin<String, Integer> {
+public class CountLinesPerAuthorPlugin extends AnalyzerPlugin<Map<String, Integer>> {
     public static final String name = "countLines";
-    private final Configuration configuration;
-    private Result result;
-    private PluginConfig options;
 
     public CountLinesPerAuthorPlugin(Configuration generalConfiguration) {
-        this.configuration = generalConfiguration;
-        this.options = generalConfiguration.getPluginConfigs().remove(CountLinesPerAuthorPlugin.name);
+        super(generalConfiguration, name);
     }
 
     Result processLog(List<Commit> gitLog) {
@@ -30,19 +26,12 @@ public class CountLinesPerAuthorPlugin implements AnalyzerPlugin<String, Integer
         return result;
     }
 
-    @Override
     public void run() {
         List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
-    @Override
-    public Result getResult() {
-        if (result == null) run();
-        return result;
-    }
-
-    static class Result implements AnalyzerPlugin.Result<String, Integer> {
+    static class Result implements AnalyzerPlugin.Result<Map<String, Integer>> {
         private PluginConfig options;
         private final Map<String, Integer> linePerAuthor = new HashMap<String, Integer>();
 

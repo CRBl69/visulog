@@ -3,9 +3,10 @@ package up.visulog.cli;
 import static spark.Spark.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.util.stream.Collectors;
 
 public class ServeFrontend {
     public static void serve(int port, String data) throws IOException {
@@ -33,20 +34,31 @@ public class ServeFrontend {
     }
     
     private static String getIndex() throws IOException {
-        Path path = Paths.get("src/main/resources/module.html");
-
-        return Files.readString(path);
+        return getResourceFileAsString("module.html");
     }
     
     private static String getScript() throws IOException {
-        Path path = Paths.get("src/main/resources/script.js");
-
-        return Files.readString(path);
+        return getResourceFileAsString("script.js");
     }
 
     private static String getStyle() throws IOException {
-        Path path = Paths.get("src/main/resources/style.css");
-
-        return Files.readString(path);
+        return getResourceFileAsString("style.css");
+    }
+    /**
+     * Reads given resource file as a string.
+     *
+     * @param fileName path to the resource file
+     * @return the file's contents
+     * @throws IOException if read fails for any reason
+     */
+    static String getResourceFileAsString(String fileName) throws IOException {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        try (InputStream is = classLoader.getResourceAsStream(fileName)) {
+            if (is == null) return null;
+            try (InputStreamReader isr = new InputStreamReader(is);
+                 BufferedReader reader = new BufferedReader(isr)) {
+                return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+            }
+        }
     }
 }

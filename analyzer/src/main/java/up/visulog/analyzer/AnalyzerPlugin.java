@@ -1,14 +1,22 @@
 package up.visulog.analyzer;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 
-public interface AnalyzerPlugin<T1, T2> {
-    interface Result<T1,T2> {
+public abstract class AnalyzerPlugin<T> implements Runnable {
+    protected Result<T> result;
+    protected PluginConfig options;
+    protected Configuration configuration;
+
+    public AnalyzerPlugin(Configuration generalConfiguration, String pluginName) {
+        this.options = generalConfiguration.getPluginConfigs().remove(pluginName);
+        this.configuration = generalConfiguration;
+    }
+
+    interface Result<T> {
 
         @JsonIgnore
         String getResultAsString();
@@ -20,7 +28,7 @@ public interface AnalyzerPlugin<T1, T2> {
          * @return an object that represents the data of the plugin
          */
         @JsonProperty("data")
-        Map<T1, T2> getData();
+        T getData();
 
         /**
          * This is useful in order to know by which plugin the
@@ -52,10 +60,13 @@ public interface AnalyzerPlugin<T1, T2> {
     /**
      * run this analyzer plugin
      */
-    void run();
+    public abstract void run();
 
     /**
      * @return the result of this analysis. Runs the analysis first if not already done.
      */
-    Result<T1, T2> getResult();
+    Result<T> getResult() {
+        if(result == null) run();
+        return result;
+    }
 }
