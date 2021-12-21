@@ -56,6 +56,7 @@ public class Analyzer {
             case CountContributionPercentagePlugin.name : return Optional.of(new CountContributionPercentagePlugin(config));
             case CountLinesOverTimePlugin.name : return Optional.of(new CountLinesOverTimePlugin(config));
             case CountFilesChanged.name : return Optional.of(new CountFilesChanged(config));
+            case CountAverageLinesPerCommitPerAuthor.name : return Optional.of(new CountAverageLinesPerCommitPerAuthor(config));
             default : return Optional.empty();
         }
     }

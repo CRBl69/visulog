@@ -9,6 +9,7 @@ import up.visulog.analyzer.CountLinesPerAuthorPlugin;
 import up.visulog.analyzer.CountLinesRemovedPerAuthorPlugin;
 import up.visulog.analyzer.CountMergeCommitsPerAuthor;
 import up.visulog.analyzer.CountAuthorsPlugin;
+import up.visulog.analyzer.CountAverageLinesPerCommitPerAuthor;
 import up.visulog.config.Configuration;
 import up.visulog.config.PluginConfig;
 
@@ -220,6 +221,9 @@ public class CLILauncher {
                     break;
                 case "countFilesChanged" : 
                     plugins.put(CountFilesChanged.name, new PluginConfig().addChart("bars"));
+                case "CountAverageLinesPerCommitPerAuthor":
+                    plugins.put(CountAverageLinesPerCommitPerAuthor.name, new PluginConfig().addChart("bars"));
+                    break;
             }
         }
         try {
