@@ -11,6 +11,7 @@ Plugin | Fonction
 `countLinesOverTime` | counts the number of added lines per day
 `countMergeCommits` | counts the number of merge commits per author
 `countContributionPercentage` | counts the percentage of contribution of each author
+`countMostChangedFiles` | gets the most changed files
 
 ## Plugin options
 
