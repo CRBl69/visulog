@@ -4,6 +4,7 @@ import up.visulog.analyzer.Analyzer;
 import up.visulog.analyzer.CountCommitsPerAuthorPlugin;
 import up.visulog.analyzer.CountContributionPercentagePlugin;
 import up.visulog.analyzer.CountLinesOverTimePlugin;
+import up.visulog.analyzer.CountFilesChanged;
 import up.visulog.analyzer.CountLinesPerAuthorPlugin;
 import up.visulog.analyzer.CountLinesRemovedPerAuthorPlugin;
 import up.visulog.analyzer.CountMergeCommitsPerAuthor;
@@ -211,12 +212,14 @@ public class CLILauncher {
                 case "countMergeCommits":
                     plugins.put(CountMergeCommitsPerAuthor.name, new PluginConfig().addChart("bars"));
                     break;
-                    case "countContributionPercentage":
-                        plugins.put(CountContributionPercentagePlugin.name, new PluginConfig().addChart("bars"));
-                        break;
-                    case "countLinesOverTime":
-                        plugins.put(CountLinesOverTimePlugin.name, new PluginConfig().addChart("bars"));
-                        break;
+                case "countContributionPercentage":
+                    plugins.put(CountContributionPercentagePlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countLinesOverTime":
+                    plugins.put(CountLinesOverTimePlugin.name, new PluginConfig().addChart("bars"));
+                    break;
+                case "countFilesChanged" : 
+                    plugins.put(CountFilesChanged.name, new PluginConfig().addChart("bars"));
             }
         }
         try {
