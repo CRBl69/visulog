@@ -54,11 +54,13 @@ Visulog contains the following modules:
     ```
     source SCRIPT/envsetup
     ```
-    This will setup the GRADLE_OPTS environment variable so that gradle uses the SCRIPT proxy for downloading its dependencies. It will also use a custom trust store (the one installed in the system is apparently broken... ).
+
+This will setup the GRADLE_OPTS environment variable so that gradle uses the SCRIPT proxy for downloading its dependencies. It will also use a custom trust store (the one installed in the system is apparently broken... ).
 4. run gradle wrapper (it will download all dependencies, including gradle itself)
-    ```
-    ./gradlew build
-    ```
+```
+./gradlew build
+```
+
 ### Running the software
 
 Currently, it can be run through gradle too. In order to pass program arguments, you need to pass them behind `--args`:
@@ -69,7 +71,14 @@ Currently, it can be run through gradle too. In order to pass program arguments,
 For instance
 
 ```
-./gradlew run --args='. --addPlugin=countCommits'
+./gradlew run --args='. --addPlugin countCommits'
 ```
 
 Will count the commits of each author in the current branch of the git repository present in the current folder (".").
+
+PLUGINS.md lists all the progam arguments and plugins you can use in visulog.
+
+## Documentation
+
+The documentation can be found in the `docs` folder
+
