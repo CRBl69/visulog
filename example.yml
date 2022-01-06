@@ -1,39 +1,26 @@
-# this file is the explanation of the file: config.yml
-# more informations on how to use it on README.md and PLUGINS.md
+# this file is an example configuration
 
-path: "."
-plugins:
-# plugins is the dictionnary that will list all the plugins
-# each members of this list should start witch "- "
-
-  - name: countCommits
-    # firstly we specify which plugin we want in the configuration file
-    # here the dictionnary "name" has as its value "countCommits"
-
-    options:
-    # then we introduce the options 
-
-      charts:
-      # this option allows you to choose the graph wanted
-
+path: "." # The path of the git repo
+plugins: # The list of plugins you want to use with their options
+  - name: countCommits # The name of the plugin
+    options: # The plugin's option
+      charts: # The charts to add to your plugin
         - bar
         - doughnut
         - line
-      valueOptions:
-      # this option allows you to add a name to your plugin on the display
-
+      valueOptions: # Key <-> value settings
         displayName: Compter les commits par personne
         width: 300
-      toggleOptions:
-      # TODO 
+      toggleOptions: # On/Off settings
         - nocolor
         - cute
         - percent
-
-  - name: countAuthors
-    options:
+  - name: countAuthors # Here's a second plugin
+    options: # With more options
       charts:
         - pie
         - bar
       valueOptions:
-        displayName: Compter le nombre total d'auteurs 
+        displayName: Compter le nombre total d'auteurs
+        date: 2021-01-01~2022-01-01 # A date filter
+        author: ".*Claire.*" # A name filter

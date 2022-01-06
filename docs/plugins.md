@@ -4,8 +4,13 @@
 
 Plugin | Fonction
 -- | --
-`countAuthors` | lists the authors
-`countCommits` | counts the commits by authors
+`countAuthors` | count the number of authors
+`countCommits` | counts the commits per authors
+`countLines` | counts the number of added lines per author
+`countRemovedLines` | counts the number of removed lines per author
+`countLinesOverTime` | counts the number of added lines per day
+`countMergeCommits` | counts the number of merge commits per author
+`countContributionPercentage` | counts the percentage of contribution of each author
 
 ## Plugin options
 
@@ -27,6 +32,8 @@ Options | Type | What it means
 --- | --- | ---
 `displayName` | string | The name you want your plugin to show up as in the frontend
 `width` | int | The width of the graph
+`author` | string | A regular expression that should match the whole name of the author
+`date` | string | A date interval to select commits
 
 ### The toggle options
 
@@ -34,9 +41,7 @@ They represent on and off values (i.e. nocolor).
 
 A list of existins value options that are not specific to any plugins is:
 
-Options | What it means
---- | ---
-`nocolor` | [TODO] makes the chart use black and white values
+There are currently no toggle options.
 
 ### The charts
 
