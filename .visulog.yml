@@ -1,14 +1,13 @@
 path: "."
 plugins:
-  - name: countMergeCommits
+  - name: countLinesPerCommitPerAuthor
     options:
       charts:
         - bar
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les merge commits par personne
-        date: 2021-11-01~2021-12-01
+        displayName: Compter les lignes par commits par personne
   - name: countLinesOverTime
     options:
       charts:
@@ -26,4 +25,3 @@ plugins:
         - line
       valueOptions:
         displayName: Compter les commits par personne
-        width: 600
