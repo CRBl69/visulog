@@ -1,6 +1,6 @@
 path: "."
 plugins:
-  - name: CountAverageLinesPerCommitPerAuthor
+  - name: countLinesPerCommitPerAuthor
     options:
       charts:
         - bar

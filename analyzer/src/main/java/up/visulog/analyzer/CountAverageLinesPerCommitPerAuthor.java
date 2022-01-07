@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CountAverageLinesPerCommitPerAuthor implements AnalyzerPlugin<String, Integer> {
-    public static final String name = "CountAverageLinesPerCommitPerAuthor";
+    public static final String name = "countLinesPerCommitPerAuthor";
     private final Configuration configuration;
     private Result result;
     private PluginConfig options;
