@@ -11,15 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountAverageLinesPerCommitPerAuthor implements AnalyzerPlugin<String, Integer> {
+public class CountAverageLinesPerCommitPerAuthor extends AnalyzerPlugin<Map<String, Integer>> {
     public static final String name = "countLinesPerCommitPerAuthor";
-    private final Configuration configuration;
     private Result result;
-    private PluginConfig options;
 
     public CountAverageLinesPerCommitPerAuthor(Configuration config) {
-        configuration = config;
-        this.options = config.getPluginConfigs().remove(CountAverageLinesPerCommitPerAuthor.name);
+        super(config, name);
     }
 
     Result processLog (List<Commit> log) {
@@ -45,13 +42,7 @@ public class CountAverageLinesPerCommitPerAuthor implements AnalyzerPlugin<Strin
 
     @Override
     public void run() {
-        List<Filter> filters = new ArrayList<Filter>();
-        for (var options : this.options.getValueOptions().entrySet()){
-            try {
-                filters.add(Filter.getFilter(options.getKey(), options.getValue()));
-            } catch (IllegalArgumentException e) {
-            }
-        }
+        List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
     
@@ -61,7 +52,7 @@ public class CountAverageLinesPerCommitPerAuthor implements AnalyzerPlugin<Strin
         return result;
     }
 
-    static class Result implements AnalyzerPlugin.Result<String, Integer> {
+    static class Result implements AnalyzerPlugin.Result<Map<String, Integer>> {
         private HashMap<String, Integer> averageLines;
         private PluginConfig options;
 
