@@ -48,12 +48,19 @@ function displayCharts() {
     for(let mod of moduleSelector) {
         if(mod.checked) module = gitData.find(m => m.id == mod.value);
     }
+    if(Array.isArray(module.data)) {
+        module.data = module.data.reduce((a, c) => {
+            a[c.date] = c.added + c.deleted;
+            return a;
+        }, {});
+    }
     let dataset = {
         label: module.options.valueOptions.displayName ? module.options.valueOptions.displayName : module.name,
         data: Object.values(module.data),
         backgroundColor: module.options.valueOptions.color ? module.options.valueOptions.color : Object.entries(module.data).map(a => randomColor()),
     };
     var ctx = document.getElementById('chart').getContext('2d');
+    console.log(module.data);
     var chartConfig = {
         type: chartType,
         data: {
@@ -64,7 +71,6 @@ function displayCharts() {
     chartObject = new Chart(ctx, chartConfig);
     if(module.options?.valueOptions?.width) {
         document.getElementById('chart').parentNode.style.width = module.options.valueOptions.width + 'px';
-        console.log('test');
     }
 }
 

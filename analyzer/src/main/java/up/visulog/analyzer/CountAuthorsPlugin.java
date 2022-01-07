@@ -3,7 +3,6 @@ package up.visulog.analyzer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,15 +13,11 @@ import up.visulog.gitrawdata.Filter;
 import up.visulog.config.PluginConfig;
 
 
-public class CountAuthorsPlugin implements AnalyzerPlugin<String, Integer> {
-    MyResult result; 
-    Configuration configuration;
-    private PluginConfig options;
+public class CountAuthorsPlugin extends AnalyzerPlugin<Integer> {
     public static final String name = "countAuthors";
 
     public CountAuthorsPlugin(Configuration generalConfiguration) {
-        this.options = generalConfiguration.getPluginConfigs().remove(CountAuthorsPlugin.name);
-        this.configuration = generalConfiguration;
+        super(generalConfiguration, name);
     }
 
     MyResult countAuthors(List<Commit> log) {
@@ -34,19 +29,12 @@ public class CountAuthorsPlugin implements AnalyzerPlugin<String, Integer> {
         return result;
     }
 
-    @Override
     public void run() {
         List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = countAuthors(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
-    @Override
-    public MyResult getResult() {
-        if (result == null) run();
-        return result;
-    }
-
-    static class MyResult implements AnalyzerPlugin.Result<String, Integer> {
+    static class MyResult implements AnalyzerPlugin.Result<Integer> {
         HashSet<String> authorSet;
         private PluginConfig options;
 
@@ -81,10 +69,8 @@ public class CountAuthorsPlugin implements AnalyzerPlugin<String, Integer> {
         }
 
         @Override
-        public Map<String, Integer> getData() {
-            var map = new HashMap<String, Integer>();
-            map.put("totalAuthors", this.authorSet.size());
-            return map;
+        public Integer getData() {
+            return this.authorSet.size();
         }
 
     }

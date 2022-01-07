@@ -1,19 +1,30 @@
 package up.visulog.gitrawdata;
 
-import java.time.LocalDateTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DateFilter extends Filter {
-    private LocalDateTime dateEnd;
-    private LocalDateTime dateStart;
+    private Date dateEnd;
+    private Date dateStart;
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    public DateFilter(String start, String end){
-        dateStart = LocalDateTime.parse(start + "T00:00:00");
-        dateEnd = LocalDateTime.parse(end + "T23:59:59");
+    public DateFilter(String start, String end) throws ParseException {
+        dateStart = df.parse(start);
+        dateEnd = df.parse(end);
     }
 
-    public DateFilter(String start){
-        dateStart = LocalDateTime.parse(start + "T00:00:00");
-        dateEnd = dateStart.plusDays(1);
+    public DateFilter(String filterValue) throws ParseException {
+        String[] date = filterValue.split("~");
+        if (date.length == 1) {
+            dateStart = df.parse(date[0]);
+            dateEnd = new Date(dateStart.getTime() + 1000 * 60 * 60 * 24);
+        } else if(date.length == 2) {
+            dateStart = df.parse(date[0]);
+            dateEnd = df.parse(date[1]);
+        } else {
+            throw new ParseException("Invalid date format", 0);
+        }
     }
 
     public boolean filter(Commit commit){

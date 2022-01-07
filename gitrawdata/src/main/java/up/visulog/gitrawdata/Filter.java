@@ -2,19 +2,16 @@ package up.visulog.gitrawdata;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.text.ParseException;
 
 public abstract class Filter {
     public abstract boolean filter(Commit commit);
 
-    public static Filter getFilter(String filterType, String filterValue) throws IllegalArgumentException {
+    public static Filter getFilter(String filterType, String filterValue) throws IllegalArgumentException, ParseException {
         if (filterType.equals("author")) {
             return new NameFilter(filterValue);
         } else if (filterType.equals("date")) {
-            String[] date = filterValue.split("~");
-            if (date.length == 1) {
-                return new DateFilter(date[0]);
-            }
-            return new DateFilter(date[0], date[1]);
+            return new DateFilter(filterValue);
         } else {
             throw new IllegalArgumentException("Invalid filter type: " + filterType);
         }
@@ -26,6 +23,8 @@ public abstract class Filter {
             try {
                 filters.add(Filter.getFilter(options.getKey(), options.getValue()));
             } catch (IllegalArgumentException e) {
+            } catch (ParseException e) {
+                System.out.println("Invalid value for filter \"" + options.getKey() + "\": " + options.getValue());
             }
         }
         return filters;

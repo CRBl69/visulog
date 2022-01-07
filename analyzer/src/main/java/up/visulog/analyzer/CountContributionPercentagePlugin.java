@@ -5,21 +5,16 @@ import up.visulog.config.PluginConfig;
 import up.visulog.gitrawdata.Commit;
 import up.visulog.gitrawdata.Filter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class CountContributionPercentagePlugin implements AnalyzerPlugin<String, Double> {
+public class CountContributionPercentagePlugin extends AnalyzerPlugin<Map<String, Double>> {
     public static final String name = "countContributionPercentage";
-    private final Configuration configuration;
-    private Result result;
-    private PluginConfig options;
 
     public CountContributionPercentagePlugin(Configuration generalConfiguration) {
-        this.configuration = generalConfiguration;
-        this.options = generalConfiguration.getPluginConfigs().remove(CountContributionPercentagePlugin.name);
+        super(generalConfiguration, name);
     }
 
     Result processLog(List<Commit> gitLog) {
@@ -36,19 +31,12 @@ public class CountContributionPercentagePlugin implements AnalyzerPlugin<String,
         return result;
     }
 
-    @Override
     public void run() {
         List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
 
-    @Override
-    public Result getResult() {
-        if (result == null) run();
-        return result;
-    }
-
-    static class Result implements AnalyzerPlugin.Result<String, Double> {
+    static class Result implements AnalyzerPlugin.Result<Map<String, Double>> {
         private PluginConfig options;
         private final Map<String, Double> percentagePerAuthor = new HashMap<>();
 
