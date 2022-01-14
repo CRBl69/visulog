@@ -23,20 +23,20 @@ public class CountAverageLinesPerCommitPerAuthor extends AnalyzerPlugin<Map<Stri
         var result = new Result(this.options);
         HashMap<String, Integer> authors = new HashMap<>();
         for (var commit : log) {
-            if(authors.containsKey(commit.author)) {
+            if(authors.containsKey(commit.author) && !commit.mergeCommit) {
                 authors.replace(commit.author, authors.get(commit.author)+1);
                 result.averageLines.replace(commit.author, result.averageLines.get(commit.author)+
                                                             commit.linesAdded+
                                                             commit.linesRemoved);
-            } else {
-                authors.put(commit.author, 1);  
+            } else if(!commit.mergeCommit) {
+                authors.put(commit.author, 1);
                 result.averageLines.put(commit.author, commit.linesAdded+commit.linesRemoved);
             }
         }
-        authors.forEach((s, i) -> 
-        result.averageLines.replace(s, (result.averageLines.get(s))/i)
+        authors.forEach((s, i) ->
+            result.averageLines.replace(s, (result.averageLines.get(s))/i)
         );
-    
+
         return result;
     }
 
@@ -45,7 +45,7 @@ public class CountAverageLinesPerCommitPerAuthor extends AnalyzerPlugin<Map<Stri
         List<Filter> filters = Filter.getFilters(this.options.getValueOptions());
         result = processLog(Commit.getFilteredCommits(configuration.getGitRepo(), filters));
     }
-    
+
     @Override
     public Result getResult() {
         if (result == null) run();
@@ -74,7 +74,7 @@ public class CountAverageLinesPerCommitPerAuthor extends AnalyzerPlugin<Map<Stri
 
         @Override
         public String getPluginName() {
-            return CountAuthorsPlugin.name;
+            return CountAverageLinesPerCommitPerAuthor.name;
         }
 
         @Override

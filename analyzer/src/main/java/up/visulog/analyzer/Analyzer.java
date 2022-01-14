@@ -32,14 +32,7 @@ public class Analyzer {
 
         // run all the plugins
         for (var plugin: plugins) {
-            Thread thread = new Thread(plugin);
-            thread.start();
-            threadList.add(thread);
-        }
-
-        while(true) {
-            threadList.removeIf(t -> !t.isAlive());
-            if (threadList.isEmpty()) break;
+            plugin.run();
         }
 
         // store the results together in an AnalyzerResult instance and return it

@@ -2,7 +2,9 @@ package up.visulog.gitrawdata;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
@@ -24,10 +25,13 @@ import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 public class Commit {
+    private static List<RevCommit> rCommits = null;
+    private static HashMap<String, Commit> cache = new HashMap<String, Commit>();
     public final String id;
     public final Date date;
     public final String author;
@@ -36,6 +40,8 @@ public class Commit {
     public final int linesAdded;
     public final int linesRemoved;
     public final HashMap<String, Integer> files;
+    private static DiffFormatter df = null;
+    private static RevWalk rw = null;
 
     public Commit(String id, String author, Date date, String description, boolean mergeCommit, int linesAdded, int linesRemoved, HashMap<String, Integer> files) {
         this.id = id;
@@ -65,6 +71,9 @@ public class Commit {
      */
 
     public static Commit commitOfRevCommit (AnyObjectId id, RevCommit rCommit, Repository repo, boolean calculateDiff) throws MissingObjectException, IncorrectObjectTypeException, IOException{
+        if(cache.get(id.getName()) != null) {
+            return cache.get(id.getName());
+        }
         var author = rCommit.getAuthorIdent();
         var name = author.getName();
         var email = author.getEmailAddress();
@@ -78,29 +87,21 @@ public class Commit {
         int linesDeleted = 0;
         int linesAdded = 0;
         HashMap<String, Integer> files = new HashMap<>();
-        if(calculateDiff) {
-            RevWalk rw = new RevWalk(repo);
-            RevCommit parent = rCommit.getParentCount() == 0 ? null :  rw.parseCommit(rCommit.getParent(0).getId());
-            DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
-            df.setRepository(repo);
-            df.setDiffComparator(RawTextComparator.DEFAULT);
-            df.setDetectRenames(true);
-            List<DiffEntry> diffs;
-            diffs = df.scan(parent == null ? null : parent.getTree(), rCommit.getTree());
+        boolean mergeCommit = rCommit.getParentCount() > 1 ? true : false;
+        if(calculateDiff && !mergeCommit) {
+            RevCommit parent = rCommit.getParentCount() == 0 ? null : rw.parseCommit(rCommit.getParent(0).getId());
+            List<DiffEntry> diffs = df.scan(parent == null ? null : parent.getTree(), rCommit.getTree());
             for (DiffEntry diff : diffs) {
                 String newpath = diff.getNewPath();
                 Path path = Paths.get(newpath);
                 String filename = path.getFileName().toString();
                 for (Edit edit : df.toFileHeader(diff).toEditList()) {
-                    linesDeleted += edit.getEndA() - edit.getBeginA();
-                    linesAdded += edit.getEndB() - edit.getBeginB();
+                    linesDeleted += edit.getLengthA();
+                    linesAdded += edit.getLengthB();
                 }
                 files.put(filename, linesAdded+linesDeleted);
             }
-            rw.close();
-            df.close();
         }
-        boolean mergeCommit = rCommit.getParentCount() > 1 ? true : false;
 
         var commit =
             new Commit(id.getName(),
@@ -111,6 +112,9 @@ public class Commit {
                 linesAdded,
                 linesDeleted,
                 files);
+        if(calculateDiff && !mergeCommit) {
+            cache.put(commit.id, commit);
+        }
         return commit;
     }
 
@@ -131,29 +135,47 @@ public class Commit {
     }
 
     public static List<Commit> getFilteredCommits(Repository repo, List<Filter> filters){
+        if(df == null) {
+            df = new DiffFormatter(DisabledOutputStream.INSTANCE);
+            df.setRepository(repo);
+            df.setDiffComparator(RawTextComparator.DEFAULT);
+            df.setDetectRenames(true);
+        }
+        if(rw == null) {
+            rw = new RevWalk(repo);
+        }
         List<Commit> res = getAllCommitsWithoutDiff(repo);
-        for (int i=0; i<filters.size(); i++){
-            for (int j=0; j<res.size(); j++){
-                if (!filters.get(i).filter(res.get(j))) {
-                    res.remove(j);
-                    j--;
+        System.out.println("[Filtering commits]: done !");
+        int size = res.size();
+        res.removeIf(commit -> {
+            boolean keep = true;
+            for (Filter filter : filters) {
+                if(!filter.filter(commit)){
+                    keep = false;
+                    break;
                 }
             }
-        }
+            return !keep;
+        });
+        System.out.println("[Filtering commits]: done !");
+        System.out.println("[Filtering commits]: commits before filters: " + size);
+        System.out.println("[Filtering commits]: commits after filters: " + res.size());
         return getCommitsFromList(repo, res.stream().map(commit -> commit.id).collect(Collectors.toList()));
     }
 
     public static List<Commit> getAllCommitsWithoutDiff(Repository repo) {
         try {
-            List<Commit> commits = new ArrayList<>();
             Git git = new Git(repo);
-            Iterable<RevCommit> rCommits = git.log().all().call();
-            for(var rCommit : rCommits) {
+            var rCommitsList = getRevCommits(repo);
+            System.out.println("[Getting all commits without diff]: starting...");
+            List<Commit> commits = new ArrayList<>();
+            for(var rCommit : rCommitsList) {
                 commits.add(commitOfRevCommit(rCommit.getId(), rCommit, repo, false));
             }
+            System.out.println("[Getting all commits without diff]: done !");
             git.close();
             return commits;
-        } catch (RevisionSyntaxException | IOException | GitAPIException e) {
+        } catch (RevisionSyntaxException  | IOException  e) {
             e.printStackTrace();
             System.exit(1);
             return null;
@@ -164,15 +186,40 @@ public class Commit {
         try {
             List<Commit> commits = new ArrayList<Commit>();
             Git git = new Git(repo);
-            Iterable<RevCommit> rCommits = git.log().all().call();
-            for(var rCommit : rCommits) {
-                if(hashes.contains(rCommit.getName())) {
+            var rCommitsList = getRevCommits(repo);
+            System.out.println("[Getting all commits with diff]: starting...");
+            Integer counter = 0;
+            int size = hashes.size();
+            HashSet<String> hashesSet = new HashSet<>(hashes); // Using this hashset tremendously speeds up the process
+            for(var rCommit : rCommitsList) {
+                if(hashesSet.contains(rCommit.getName())) {
+                    counter++;
+                    System.out.printf("[%s%s] | %d/%d\r", "=".repeat((int)(((double)counter) / ((double)size) * 20)), " ".repeat(20 - (int)(((double)counter) / ((double)size) * 20)), counter, size);
                     commits.add(commitOfRevCommit(rCommit.getId(), rCommit, repo, true));
-                    hashes.remove(rCommit.getName());
                 }
             }
+            System.out.println("[Getting all commits with diff]: done !");
             git.close();
             return commits;
+        } catch (RevisionSyntaxException | IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+            return null;
+        }
+    }
+
+    private static List<RevCommit> getRevCommits(Repository repo) {
+        if(Commit.rCommits != null) return Commit.rCommits;
+        System.out.println("[Caching commits]: starting...");
+        try {
+            Git git = new Git(repo);
+            Iterable<RevCommit> rCommits = git.log().all().call();
+            List<RevCommit> rCommitsList = new ArrayList<>();
+            rCommits.forEach(rc -> rCommitsList.add(rc));
+            Commit.rCommits = rCommitsList;
+            git.close();
+            System.out.println("[Caching commits]: done !");
+            return new ArrayList<RevCommit>(rCommitsList);
         } catch (RevisionSyntaxException | IOException | GitAPIException e) {
             e.printStackTrace();
             System.exit(1);

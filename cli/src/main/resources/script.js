@@ -7,7 +7,7 @@ let gitData;
 document.querySelector('#header').innerText = `Visulog - Charts`;
 
 fetch('data.json').then(res => res.json()).then(res => gitData = res).then(() => {
-    for(let chart of gitData.map(m => m.options.charts).reduce((a, b) => [...a, ...b]).reduce((a, b) => !Array.isArray(a) ? [a] : a.includes(b) ? a : [...a, b] )) {
+    for(let chart of gitData.map(m => m.options.charts).reduce((a, b) => [...a, ...b])) {
         let chartRadio = document.createElement('input');
         let chartLabel = document.createElement('label');
         chartRadio.name = 'chartType';

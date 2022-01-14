@@ -8,6 +8,7 @@ plugins:
         - line
       valueOptions:
         displayName: Compter les lignes par commits par personne
+        date: 2021-09-01~2022-01-01
   - name: countLinesOverTime
     options:
       charts:
@@ -24,4 +25,4 @@ plugins:
         - doughnut
         - line
       valueOptions:
-        displayName: Compter les commits par personne
+        displayName: Compter les fichiers les plus changés
